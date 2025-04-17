@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name:     Google Rating Dynamic Tags Elementor
- * Plugin URI:      https://github.com/Websitetoday/google-rating-elementor-plugin
+ * Plugin URI:      https://www.websitetoday.nl/
  * Update URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon Google rating & review-aantal als Dynamic Tags en shortcodes.
- * Version:         1.5.1
+ * Version:         1.5.2
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
  * Text Domain:     gre
