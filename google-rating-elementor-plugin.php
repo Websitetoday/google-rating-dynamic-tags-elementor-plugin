@@ -177,15 +177,18 @@ function gre_options_page() {
         <?php else : ?>
             <h2><?php esc_html_e( 'Changelog', 'gre' ); ?></h2>
             <ul>
-                <li><strong>1.4.2</strong> &ndash; <?php esc_html_e( 'New: Test verbinding & ververs data knoppen, UI & shortcode toggle tweaks', 'gre' ); ?></li>
-                <li><strong>1.4.1</strong> &ndash; <?php esc_html_e( 'Fix: verwijder clear_cache hook', 'gre' ); ?></li>
-                <li><strong>1.4.0</strong> &ndash; <?php esc_html_e( 'New: eigen top‑level menu en admin tabs', 'gre' ); ?></li>
-                <li><strong>1.3.2</strong> &ndash; <?php esc_html_e( 'Fix: syntaxfouten in register_tags_group', 'gre' ); ?></li>
-                <li><strong>1.3.1</strong> &ndash; <?php esc_html_e( 'Tweak: default rating_star, correct add_action', 'gre' ); ?></li>
-                <li><strong>1.3.0</strong> &ndash; <?php esc_html_e( 'New: “Aantal reviews (nummer)” voor counter widgets', 'gre' ); ?></li>
-                <li><strong>1.2.0</strong> &ndash; <?php esc_html_e( 'Tweak: groep Google Rating onder eigen kopje', 'gre' ); ?></li>
-                <li><strong>1.1.1</strong> &ndash; <?php esc_html_e( 'Tweak: Author URI toegevoegd, remove Place ID control', 'gre' ); ?></li>
-            </ul>
+    <li><strong>1.5.2</strong> &ndash; <?php esc_html_e( 'Fix: verwijderde niet‑werkende Test/Ververs knoppen en bijbehorende AJAX‑code', 'gre' ); ?></li>
+    <li><strong>1.5.1</strong> &ndash; <?php esc_html_e( 'Tweak: shortcode‑registratie hersteld zodat deze weer werkt', 'gre' ); ?></li>
+    <li><strong>1.5.0</strong> &ndash; <?php esc_html_e( 'New: ondersteuning voor GitHub Releases via Update URI & plugin‑naam aangepast', 'gre' ); ?></li>
+    <li><strong>1.4.2</strong> &ndash; <?php esc_html_e( 'New: Test verbinding & ververs data knoppen, UI & shortcode toggle tweaks', 'gre' ); ?></li>
+    <li><strong>1.4.1</strong> &ndash; <?php esc_html_e( 'Fix: verwijder clear_cache hook', 'gre' ); ?></li>
+    <li><strong>1.4.0</strong> &ndash; <?php esc_html_e( 'New: eigen top‑level menu en admin tabs', 'gre' ); ?></li>
+    <li><strong>1.3.2</strong> &ndash; <?php esc_html_e( 'Fix: syntaxfouten in register_tags_group', 'gre' ); ?></li>
+    <li><strong>1.3.1</strong> &ndash; <?php esc_html_e( 'Tweak: default rating_star, correct add_action', 'gre' ); ?></li>
+    <li><strong>1.3.0</strong> &ndash; <?php esc_html_e( 'New: “Aantal reviews (nummer)” voor counter widgets', 'gre' ); ?></li>
+    <li><strong>1.2.0</strong> &ndash; <?php esc_html_e( 'Tweak: groep Google Rating onder eigen kopje', 'gre' ); ?></li>
+    <li><strong>1.1.1</strong> &ndash; <?php esc_html_e( 'Tweak: Author URI toegevoegd, remove Place ID control', 'gre' ); ?></li>
+</ul>
         <?php endif; ?>
     </div>
     <?php
