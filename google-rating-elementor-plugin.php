@@ -4,7 +4,7 @@
  * Plugin URI:      https://github.com/Websitetoday/google-rating-elementor-plugin
  * Update URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon Google rating & review-aantal als Dynamic Tags en shortcodes.
- * Version:         1.5.0
+ * Version:         1.5.1
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
  * Text Domain:     gre
