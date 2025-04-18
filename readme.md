@@ -1,102 +1,129 @@
 Google Rating Dynamic Tags Elementor
 
+Met deze plugin kun je eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score en aantal reviews) van jouw bedrijf weergeven op je WordPress-website:
 
+Elementor Dynamic Tags voor Pro-gebruikers (tekst & nummer)
 
+Shortcode met vier weergaveopties
 
-Toon je Google Bedrijfsbeoordelingen (gemiddelde score en aantal reviews) via Elementor Dynamic Tags of een shortcode in je WordPress site.
+Simpele plugin-instellingen voor API Key & Place ID
 
-Features
-
-Dynamic Tags voor Elementor Pro (tekst & nummer)
-
-Shortcode [google_rating field="..."] met vier weergaveopties
-
-Eenvoudige plugin‑instellingen met API Key & Place ID
-
-Eigen admin‑menu met tabbladen: Instellingen, Shortcode Uitleg, Changelog
+Eigen admin-menu met tabbladen: Instellingen, Shortcode Uitleg, Changelog
 
 Automatische updates via GitHub Releases
 
+Vereisten
+
+WordPress 5.0 of hoger
+
+PHP 7.2 of hoger
+
+Elementor Pro (voor Dynamic Tags)
+
+Google Places API geactiveerd en API Key
+
 Installatie
 
-GitHub: Clone of download de plugin als ZIP van de releases.
+Er zijn twee manieren om de plugin te installeren:
 
-Upload de map google-rating-elementor-plugin naar /wp-content/plugins/.
+1. Via GitHub Releases
 
-Activeer via Plugins → Geïnstalleerde plugins.
+Ga naar de releases-pagina op GitHub.
 
-Navigeer naar het Google Rating menu in de admin sidebar.
+Download de nieuwste .zip-versie.
 
-Vul op het tabblad Instellingen je:
+Upload de .zip via Plugins → Nieuwe plugin → Plugin uploaden.
 
-API Key van Google Places API
+Activeer de plugin via Plugins → Geïnstalleerde plugins.
 
-Place ID van je bedrijf
+2. Handmatig
 
-(Optioneel) Vink Shortcode inschakelen aan of uit.
+Clone of download deze repository:
 
-Gebruik
 
-Elementor Dynamic Tag
 
-Open een widget in Elementor Pro (tekst of nummer).
+git clone https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin.git
 
-Klik op het database‑icoon voor Dynamische Tags.
+2. Upload de map `google-rating-dynamic-tags-elementor-plugin` naar `/wp-content/plugins/`.
+3. Activeer de plugin via **Plugins → Geïnstalleerde plugins**.
 
-Kies Google Rating (onder “Site”).
+---
 
-Stel in:
+## Configuratie
 
-Weergaveveld: Gemiddelde score (nummer), Gemiddelde score + ster, Aantal reviews (nummer) of Score + Aantal (tekst).
+1. Navigeer in de WordPress admin naar **Google Rating** in de zijbalk.
+2. Ga naar het tabblad **Instellingen**.
+3. Vul in:
+   - **API Key**: jouw Google Places API Key
+   - **Place ID**: de Place ID van jouw bedrijf
+   - **Shortcode inschakelen** (optioneel): schakel de shortcode in of uit
+4. Klik op **Opslaan**.
+5. Optioneel: test de verbinding met de knop **Controleer verbinding**.
 
-Pas styling toe en publiceer.
+---
 
-Shortcode
+## Gebruik
 
-Gebruik in een Gutenberg‑ of tekstblok:
+### Elementor Dynamic Tag
 
+1. Open een widget in **Elementor Pro** (tekst of nummer).
+2. Klik op het dynamische tags-icoon (database-icoon).
+3. Selecteer **Google Rating** onder het kopje **Site**.
+4. Stel het **Weergaveveld** in:
+   - `Gemiddelde score (nummer)` → puur getal
+   - `Gemiddelde score + ster` → bijv. “4.5 ★”
+   - `Aantal reviews (nummer)` → puur aantal
+   - `Score + Aantal (tekst)` → bijv. “**4.5** ★ 123 reviews”
+5. Pas styling toe en publiceer.
+
+### Shortcode
+
+Gebruik de shortcode in een Gutenberg- of Tekstblok:
+
+```shortcode
 [google_rating field="rating_star"]
 
-Field-opties:
+Beschikbare field-opties:
+
+field
+
+Output
 
 rating_number
 
+Gemiddelde score als nummer
+
 rating_star
+
+Gemiddelde score + ster
 
 count_number
 
+Aantal reviews als nummer
+
 both
+
+Score + aantal reviews (tekst)
 
 Changelog
 
-1.5.0
+Zie in de plugin-admin onder Changelog voor alle details. Kort overzicht:
 
-New: GitHub Releases update‑support via Update URI
+1.5.4 – Real-time statusicoontjes voor API Key & Place ID
 
-Tweak: Plugin naam gewijzigd naar “Google Rating Dynamic Tags Elementor”
+1.5.3 – Verbeterde verbindingscheck met icoon & foutmeldingen
 
-1.4.2
+1.5.2 – Fix: verwijderde niet-werkende Test/Ververs knoppen
 
-Tweak: Test verbinding & ververs data knoppen (verwijderd)
+1.5.1 – Tweak: shortcode-registratie hersteld
 
-Tweak: UI‑verbeteringen & shortcode toggle
-
-1.4.1
-
-Fix: Verwijder clear_cache hook voor compatibiliteit
-
-1.4.0
-
-New: Eigen top‑level menu en admin tabbladen
-
-1.3.x en eerder
-
-Zie de Changelog in het plugin‑admin voor alle details.
+1.5.0 – Ondersteuning GitHub Releases via Update URI
 
 Ondersteuning & Bugs
 
-Rapporteer issues op de GitHub Issues-pagina.
+Rapporteer issues of feature requests op de GitHub Issues-pagina.
 
 Licentie
 
-GPLv2 or later. Zie het LICENSE bestand voor details.
+GPLv2 of hoger. Zie het LICENSE-bestand voor details.
+
