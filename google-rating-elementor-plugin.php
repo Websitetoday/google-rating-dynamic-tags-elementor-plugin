@@ -3,15 +3,15 @@
  * Plugin Name:     Google Rating Dynamic Tags Elementor
  * Plugin URI:      https://www.websitetoday.nl/
  * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
- * Description:     Toon Google rating & review-aantal als Dynamic Tags en shortcodes.
+ * Description:     Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) als Elementor Dynamic Tag en via shortcode (meetbaar en stylebaar).
  * Version:         1.5.6
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
  * Text Domain:     gre
  * Domain Path:     /languages
- * GitHub Branch:     main
+ * GitHub Branch:   main
  * Requires at least: 5.0
- * Tested up to:      6.4
+ * Tested up to:    6.4
  */
 
 // EXIT bij direct file-access
@@ -19,22 +19,31 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// PUC-library includen en initialiseren
+// PUC-library includen
 require_once __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
-$updateChecker = Puc_v4_Factory::buildUpdateChecker(
+
+// Stap 3: Parsedown autoloaden voor PUC v5.5
+if ( ! class_exists( 'Parsedown' ) ) {
+    require_once __DIR__ . '/plugin-update-checker/Puc/v5p5/Parsedown.php';
+}
+
+// Gebruik PUC v5 factory
+// Volledige namespace: \YahnisElsts\PluginUpdateChecker\v5\PucFactory
+$updateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
     'https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/',
     __FILE__,
     'google-rating-dynamic-tags-elementor-plugin'
 );
 $updateChecker->setBranch('main');
 
+// Inject eigen plugin-icon in de "View Details" modal
 add_filter( 'plugins_api', function( $res, $action, $args ) {
-    // Alleen voor de 'plugin_information' call van jouw plugin
+    // Alleen plugin-informatie voor deze plugin en indien $res een object is
     if ( 'plugin_information' === $action
+      && is_object( $res )
       && ! empty( $args->slug )
       && 'google-rating-dynamic-tags-elementor-plugin' === $args->slug
     ) {
-        // Voeg hier je eigen iconen toe
         $res->icons = [
             '1x' => plugin_dir_url( __FILE__ ) . 'icon-128x128.png',
             '2x' => plugin_dir_url( __FILE__ ) . 'icon-256x256.png',
@@ -42,7 +51,6 @@ add_filter( 'plugins_api', function( $res, $action, $args ) {
     }
     return $res;
 }, 10, 3 );
-
 
 /** Optie-namen */
 if ( ! defined( 'GRE_OPT_API_KEY' ) ) {
