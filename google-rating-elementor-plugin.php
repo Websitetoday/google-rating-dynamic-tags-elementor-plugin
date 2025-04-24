@@ -1,15 +1,46 @@
 <?php
 /**
- * Plugin Name:     Google Rating Dynamic Tags Elementor
- * Plugin URI:      https://www.websitetoday.nl/
- * Update URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
- * Description:     Toon Google rating & review-aantal als Dynamic Tags en shortcodes.
- * Version:         1.5.4
- * Author:          Websitetoday.nl
- * Author URI:      https://www.websitetoday.nl/
- * Text Domain:     gre
- * Domain Path:     /languages
+ * Plugin Name:         Google Rating Dynamic Tags Elementor
+ * Plugin URI:          https://www.websitetoday.nl/
+ * Update URI:          https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
+ * GitHub Plugin URI:   https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
+ * Description:         Toon Google rating & review-aantal als Dynamic Tags en shortcodes.
+ * Version:             1.5.5
+ * Author:              Websitetoday.nl
+ * Author URI:          https://www.websitetoday.nl/
+ * Text Domain:         gre
+ * Domain Path:         /languages
  */
+
+
+// Git Updater integratie
+if ( file_exists( __DIR__ . '/lib/github-updater/vendor/autoload.php' ) ) {
+    // Composer-autoloader
+    require_once __DIR__ . '/lib/github-updater/vendor/autoload.php';
+}
+
+// Daarna het bootstrap-script
+if ( file_exists( __DIR__ . '/lib/github-updater/git-updater.php' ) ) {
+    require_once __DIR__ . '/lib/github-updater/git-updater.php';
+
+    if ( class_exists( 'Git_Updater' ) ) {
+        $updater = new Git_Updater( __FILE__ );
+        $updater->repo_owner   = 'Websitetoday';
+        $updater->repo_name    = 'google-rating-dynamic-tags-elementor-plugin';
+
+        // Icons & banners
+        $updater->icon         = 'assets/icon-128x128.png';
+        $updater->banner_low   = 'assets/banner-772x250.jpg';
+        $updater->banner_high  = 'assets/banner-1544x500.jpg';
+
+        // Changelog uit je Markdown
+        $updater->changelog    = 'CHANGELOG.md';
+
+        $updater->initialize();
+    }
+}
+
+
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
