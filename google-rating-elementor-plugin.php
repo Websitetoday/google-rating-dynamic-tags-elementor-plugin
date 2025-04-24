@@ -1,50 +1,48 @@
 <?php
 /**
- * Plugin Name:         Google Rating Dynamic Tags Elementor
- * Plugin URI:          https://www.websitetoday.nl/
- * Update URI:          https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
- * GitHub Plugin URI:   https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
- * Description:         Toon Google rating & review-aantal als Dynamic Tags en shortcodes.
- * Version:             1.5.5
- * Author:              Websitetoday.nl
- * Author URI:          https://www.websitetoday.nl/
- * Text Domain:         gre
- * Domain Path:         /languages
+ * Plugin Name:     Google Rating Dynamic Tags Elementor
+ * Plugin URI:      https://www.websitetoday.nl/
+ * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
+ * Description:     Toon Google rating & review-aantal als Dynamic Tags en shortcodes.
+ * Version:         1.5.6
+ * Author:          Websitetoday.nl
+ * Author URI:      https://www.websitetoday.nl/
+ * Text Domain:     gre
+ * Domain Path:     /languages
+ * GitHub Branch:     main
+ * Requires at least: 5.0
+ * Tested up to:      6.4
  */
 
-
-// Git Updater integratie
-if ( file_exists( __DIR__ . '/lib/github-updater/vendor/autoload.php' ) ) {
-    // Composer-autoloader
-    require_once __DIR__ . '/lib/github-updater/vendor/autoload.php';
-}
-
-// Daarna het bootstrap-script
-if ( file_exists( __DIR__ . '/lib/github-updater/git-updater.php' ) ) {
-    require_once __DIR__ . '/lib/github-updater/git-updater.php';
-
-    if ( class_exists( 'Git_Updater' ) ) {
-        $updater = new Git_Updater( __FILE__ );
-        $updater->repo_owner   = 'Websitetoday';
-        $updater->repo_name    = 'google-rating-dynamic-tags-elementor-plugin';
-
-        // Icons & banners
-        $updater->icon         = 'assets/icon-128x128.png';
-        $updater->banner_low   = 'assets/banner-772x250.jpg';
-        $updater->banner_high  = 'assets/banner-1544x500.jpg';
-
-        // Changelog uit je Markdown
-        $updater->changelog    = 'CHANGELOG.md';
-
-        $updater->initialize();
-    }
-}
-
-
-
+// EXIT bij direct file-access
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+// PUC-library includen en initialiseren
+require_once __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
+$updateChecker = Puc_v4_Factory::buildUpdateChecker(
+    'https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/',
+    __FILE__,
+    'google-rating-dynamic-tags-elementor-plugin'
+);
+$updateChecker->setBranch('main');
+
+add_filter( 'plugins_api', function( $res, $action, $args ) {
+    // Alleen voor de 'plugin_information' call van jouw plugin
+    if ( 'plugin_information' === $action
+      && ! empty( $args->slug )
+      && 'google-rating-dynamic-tags-elementor-plugin' === $args->slug
+    ) {
+        // Voeg hier je eigen iconen toe
+        $res->icons = [
+            '1x' => plugin_dir_url( __FILE__ ) . 'icon-128x128.png',
+            '2x' => plugin_dir_url( __FILE__ ) . 'icon-256x256.png',
+        ];
+    }
+    return $res;
+}, 10, 3 );
+
 
 /** Optie-namen */
 if ( ! defined( 'GRE_OPT_API_KEY' ) ) {
