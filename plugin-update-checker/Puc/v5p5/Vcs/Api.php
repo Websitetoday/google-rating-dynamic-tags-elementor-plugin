@@ -3,7 +3,7 @@
 namespace YahnisElsts\PluginUpdateChecker\v5p5\Vcs;
 
 use Parsedown;
-use YahnisElsts\PluginUpdateChecker\v5p5\PucReadmeParser;
+use PucReadmeParser;
 
 if ( !class_exists(Api::class, false) ):
 
@@ -131,22 +131,14 @@ if ( !class_exists(Api::class, false) ):
 		 * @return array Parsed readme.
 		 */
 		public function getRemoteReadme($ref = 'master') {
-		$fileContents = $this->getRemoteFile( $this->getLocalReadmeName(), $ref );
-		if ( empty( $fileContents ) ) {
-			return [];
-		}
+			$fileContents = $this->getRemoteFile($this->getLocalReadmeName(), $ref);
+			if ( empty($fileContents) ) {
+				return array();
+			}
 
-		// Alleen parsen als de parser-klasse beschikbaar is
-		if ( class_exists( '\\YahnisElsts\\PluginUpdateChecker\\v5p5\\PucReadmeParser' ) ) {
-			$parser     = new \\YahnisElsts\\PluginUpdateChecker\\v5p5\\PucReadmeParser( $fileContents );
-			$headerData = $parser->getHeaderLines();
-		} else {
-			// Fallback: geen header data
-			$headerData = [];
+			$parser = new PucReadmeParser();
+			return $parser->parse_readme_contents($fileContents);
 		}
-
-		return $headerData;
-	}
 
 		/**
 		 * Get the case-sensitive name of the local readme.txt file.

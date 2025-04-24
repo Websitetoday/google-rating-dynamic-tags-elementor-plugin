@@ -220,7 +220,7 @@ function gre_options_page() {
         <?php else : ?>
             <h2><?php esc_html_e( 'Changelog', 'gre' ); ?></h2>
             <ul>
-                <li><strong>1.5.6</strong> – <?php esc_html_e( 'Nieuwe functie: Google Openingstijden tonen via Elementor Dynamic Tags, kies tussen dag en week weergave.', 'gre' ); ?></li>
+                <li><strong>1.5.6</strong> – <?php esc_html_e( 'Nieuwe functie: Google Openingstijden tonen via Elementor Dynamic Tags.', 'gre' ); ?></li>
                 <li><strong>1.5.5</strong> – <?php esc_html_e( 'Tabblad Shortcode Uitleg hernoemd naar Uitleg, uitgebreide uitleg toegevoegd over Elementor dynamic tags inclusief de openingstijden tag.', 'gre' ); ?></li>
                 <li><strong>1.5.4</strong> – <?php esc_html_e( 'Real-time statusicoontjes toegevoegd voor API Key & Place ID', 'gre' ); ?></li>
                 <li><strong>1.5.3</strong> – <?php esc_html_e( 'Nieuwe verbindingscheck met icoon en foutmelding als API Key of Place ID onjuist is', 'gre' ); ?></li>
