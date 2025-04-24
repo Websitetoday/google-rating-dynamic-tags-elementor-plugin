@@ -28,7 +28,6 @@ if ( ! class_exists( 'Parsedown' ) ) {
 }
 
 // Gebruik PUC v5 factory
-// Volledige namespace: \YahnisElsts\PluginUpdateChecker\v5\PucFactory
 $updateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
     'https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/',
     __FILE__,
@@ -38,7 +37,6 @@ $updateChecker->setBranch('main');
 
 // Inject eigen plugin-icon in de "View Details" modal
 add_filter( 'plugins_api', function( $res, $action, $args ) {
-    // Alleen plugin-informatie voor deze plugin en indien $res een object is
     if ( 'plugin_information' === $action
       && is_object( $res )
       && ! empty( $args->slug )
@@ -53,15 +51,9 @@ add_filter( 'plugins_api', function( $res, $action, $args ) {
 }, 10, 3 );
 
 /** Optie-namen */
-if ( ! defined( 'GRE_OPT_API_KEY' ) ) {
-    define( 'GRE_OPT_API_KEY',   'gre_api_key' );
-}
-if ( ! defined( 'GRE_OPT_PLACE_ID' ) ) {
-    define( 'GRE_OPT_PLACE_ID',  'gre_place_id' );
-}
-if ( ! defined( 'GRE_OPT_LAST_DATA' ) ) {
-    define( 'GRE_OPT_LAST_DATA', 'gre_last_data' );
-}
+define( 'GRE_OPT_API_KEY',   'gre_api_key' );
+define( 'GRE_OPT_PLACE_ID',  'gre_place_id' );
+define( 'GRE_OPT_LAST_DATA', 'gre_last_data' );
 
 /** Textdomain laden */
 add_action( 'plugins_loaded', function() {
@@ -171,7 +163,7 @@ function gre_options_page() {
                 <?php esc_html_e('Instellingen','gre'); ?>
             </a>
             <a href="?page=gre_options&tab=shortcode" class="nav-tab <?php echo $active_tab==='shortcode'?'nav-tab-active':''; ?>">
-                <?php esc_html_e('Shortcode Uitleg','gre'); ?>
+                <?php esc_html_e('Uitleg','gre'); ?>
             </a>
             <a href="?page=gre_options&tab=changelog" class="nav-tab <?php echo $active_tab==='changelog'?'nav-tab-active':''; ?>">
                 <?php esc_html_e('Changelog','gre'); ?>
@@ -188,7 +180,7 @@ function gre_options_page() {
             </form>
 
         <?php elseif ( $active_tab === 'shortcode' ) : ?>
-            <h2><?php esc_html_e( 'Shortcode Uitleg', 'gre' ); ?></h2>
+            <h2><?php esc_html_e( 'Uitleg', 'gre' ); ?></h2>
             <p><?php esc_html_e( 'Gebruik de shortcode met parameter <code>field</code> om output te bepalen. Mogelijke waarden:', 'gre' ); ?></p>
             <ul>
                 <li><code>rating_number</code> – <?php esc_html_e( 'Gemiddelde score als nummer', 'gre' ); ?></li>
@@ -198,9 +190,38 @@ function gre_options_page() {
             </ul>
             <p><?php esc_html_e( 'Voorbeeld:', 'gre' ); ?> <code>[google_rating field="rating_star"]</code></p>
 
+            <hr/>
+            <h2><?php esc_html_e( 'Elementor Dynamic Tags Uitleg', 'gre' ); ?></h2>
+            <p><?php esc_html_e( 'Gebruik de Google Rating dynamic tag in Elementor Pro met de volgende stappen:', 'gre' ); ?></p>
+            <ol>
+                <li><?php esc_html_e( 'Open een widget die dynamic tags ondersteunt, zoals een Heading of Tekstbewerker.', 'gre' ); ?></li>
+                <li><?php esc_html_e( 'Klik op het Dynamic Tags icoon naast het veld.', 'gre' ); ?></li>
+                <li><?php esc_html_e( 'Selecteer "Google Rating" in de lijst.', 'gre' ); ?></li>
+                <li><?php esc_html_e( 'Kies in de tag-instellingen het gewenste veld: Rating als nummer, Rating met ster, Aantal reviews of Beide.', 'gre' ); ?></li>
+                <li><?php esc_html_e( 'Pas de styling aan via de widget-instellingen.', 'gre' ); ?></li>
+            </ol>
+
+            <hr/>
+            <h2><?php esc_html_e( 'Google Openingstijden Dynamic Tag Uitleg', 'gre' ); ?></h2>
+            <p><?php esc_html_e( 'Met deze tag kun je de openingstijden van je bedrijf tonen. Volg de stappen hieronder om de Openingstijden dynamic tag te gebruiken in Elementor Pro:', 'gre' ); ?></p>
+            <ol>
+                <li><?php esc_html_e( 'Open een widget die dynamic tags ondersteunt, zoals een Tekstbewerker of Lijst.', 'gre' ); ?></li>
+                <li><?php esc_html_e( 'Klik op het Dynamic Tags icoon naast het veld.', 'gre' ); ?></li>
+                <li><?php esc_html_e( 'Selecteer "Google Opening Hours" in de lijst.', 'gre' ); ?></li>
+                <li><?php esc_html_e( 'In de tag-instellingen kun je de volgende weergave-opties kiezen:', 'gre' ); ?></li>
+                <ul>
+                    <li><?php esc_html_e( 'Volledige week (lijst met alle dagen en tijden)', 'gre' ); ?></li>
+                    <li><?php esc_html_e( 'Vandaag (alleen openingstijden voor de huidige dag)', 'gre' ); ?></li>
+                    <li><?php esc_html_e( 'Open/gesloten status (tekst)', 'gre' ); ?></li>
+                </ul>
+                <li><?php esc_html_e( 'Pas de styling en sjabloon aan via de widget-instellingen.', 'gre' ); ?></li>
+            </ol>
+
         <?php else : ?>
             <h2><?php esc_html_e( 'Changelog', 'gre' ); ?></h2>
             <ul>
+                <li><strong>1.5.6</strong> – <?php esc_html_e( 'Nieuwe functie: Google Openingstijden tonen via Elementor Dynamic Tags, kies tussen dag en week weergave.', 'gre' ); ?></li>
+                <li><strong>1.5.5</strong> – <?php esc_html_e( 'Tabblad Shortcode Uitleg hernoemd naar Uitleg, uitgebreide uitleg toegevoegd over Elementor dynamic tags inclusief de openingstijden tag.', 'gre' ); ?></li>
                 <li><strong>1.5.4</strong> – <?php esc_html_e( 'Real-time statusicoontjes toegevoegd voor API Key & Place ID', 'gre' ); ?></li>
                 <li><strong>1.5.3</strong> – <?php esc_html_e( 'Nieuwe verbindingscheck met icoon en foutmelding als API Key of Place ID onjuist is', 'gre' ); ?></li>
                 <li><strong>1.5.2</strong> – <?php esc_html_e( 'Fix: verwijderde niet‑werkende Test/Ververs knoppen en bijbehorende AJAX‑code', 'gre' ); ?></li>
@@ -227,19 +248,28 @@ function gre_fetch_google_place_data() {
     if ( empty( $api_key ) || empty( $place_id ) ) {
         return false;
     }
+
     $transient_key = 'gre_place_' . md5( $place_id );
     $last_data     = get_option( GRE_OPT_LAST_DATA );
     if ( false !== ( $data = get_transient( $transient_key ) ) ) {
         return $data;
     }
+
+    // API-call met Nederlandse taal voor weekday_text
     $response = wp_remote_get( sprintf(
-        'https://maps.googleapis.com/maps/api/place/details/json?place_id=%s&fields=rating,user_ratings_total&key=%s',
+        'https://maps.googleapis.com/maps/api/place/details/json'
+        . '?place_id=%s'
+        . '&fields=rating,user_ratings_total,opening_hours'
+        . '&language=nl'        // ← hier de taal toevoegen
+        . '&key=%s',
         urlencode( $place_id ),
         $api_key
     ) );
+
     if ( is_wp_error( $response ) ) {
         return $last_data ?: false;
     }
+
     $json = json_decode( wp_remote_retrieve_body( $response ), true );
     if ( ! empty( $json['result'] ) ) {
         update_option( GRE_OPT_LAST_DATA, $json['result'] );
@@ -247,8 +277,10 @@ function gre_fetch_google_place_data() {
         set_transient( $transient_key, $json['result'], $ttl );
         return $json['result'];
     }
+
     return $last_data ?: false;
 }
+
 
 /** 3) AJAX-handler voor verbindingscheck */
 add_action( 'wp_ajax_gre_test_connection', 'gre_test_connection_callback' );
@@ -262,7 +294,7 @@ function gre_test_connection_callback() {
         wp_send_json_error( __( 'Vul API Key en Place ID in.', 'gre' ) );
     }
     $url      = sprintf(
-        'https://maps.googleapis.com/maps/api/place/details/json?place_id=%s&fields=rating,user_ratings_total&key=%s',
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=%s&fields=rating,user_ratings_total,opening_hours&key=%s',
         urlencode( $place_id ),
         $api_key
     );
@@ -314,6 +346,16 @@ add_action( 'elementor/dynamic_tags/register_tags', function( $tags ) {
     $tags->register( new \GRE\DynamicTags\Google_Rating_Tag() );
 }, 50 );
 
+/** 5b) Google Openingstijden Dynamic Tag registreren (alleen Pro) */
+add_action( 'elementor/dynamic_tags/register_tags', function( $tags ) {
+    // Alleen als Elementor Pro actief is
+    if ( ! class_exists( 'ElementorPro\Plugin' ) ) {
+        return;
+    }
+    require_once __DIR__ . '/dynamic-tags/class-google-opening-hours-tag.php';
+    // Registreer de tag
+    $tags->register( new \GRE\DynamicTags\Google_Opening_Hours_Tag() );
+}, 51 );
 
 /** 6) Shortcode functie voor Google Rating */
 function gre_shortcode_google_rating( $atts ) {
@@ -331,6 +373,17 @@ function gre_shortcode_google_rating( $atts ) {
         default:               return sprintf( '<strong>%.1f</strong> ★ %d reviews', $rating, $count );
     }
 }
+
+// 🚨 Alleen tijdelijk voor één keer: cache legen
+/* 
+
+add_action( 'init', function() {
+    delete_transient( 'gre_place_' . md5( get_option( GRE_OPT_PLACE_ID ) ) );
+    delete_option(     GRE_OPT_LAST_DATA );
+} ); 
+ 
+*/
+
 
 /** 7) Shortcode registreren (optioneel) */
 if ( get_option( 'gre_enable_shortcode', 1 ) ) {
