@@ -1,63 +1,81 @@
 === Google Rating Dynamic Tags Elementor ===
-Contributors: Websitetoday.nl
-Tags: elementor, google, rating, dynamic-tags
-Requires at least: 5.0
-Tested up to: 6.4
-Stable tag: main
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Contributors: Websitetoday.nl  
+Tags: elementor, google, rating, dynamic-tags  
+Requires at least: 5.0  
+Tested up to: 6.4  
+Stable tag: 2.0.2  
+License: GPLv2 or later  
+License URI: https://www.gnu.org/licenses/gpl-2.0.html  
 
-== Description ==
+== Description ==  
 Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) rechtstreeks in je content:
 
-* **Elementor Dynamic Tag**: gebruik de Google Rating als tekst, nummer, ster of gecombineerde weergave.
-* **Shortcode**: voeg de rating of het aantal reviews toe via `[google_rating field="rating_star"]`.
+* **Elementor Dynamic Tag** – Gebruik de Google Rating als tekst, nummer, ster of gecombineerde weergave.
+* **Shortcode** – Voeg de rating of het aantal reviews toe via `[google_rating field="rating_star"]`.
+* **Meerdere bedrijven** – Voeg meerdere locaties toe en kies per widget of shortcode welke getoond wordt.
+* **Verbindingstest & statusicoontjes** – Visuele controle of je API werkt.
 * **Automatische updates** via GitHub Releases (PUC v5).
 
-== Installation ==
-1. Upload de pluginmap `google-rating-dynamic-tags-elementor-plugin` naar de `/wp-content/plugins/`-directory.
-2. Activeer de plugin via **Plugins → Geïnstalleerde plugins**.
-3. (Optioneel) Installeer Elementor Pro als je de Dynamic Tag-functionaliteit wilt gebruiken.
-4. Ga naar **Google Rating → Instellingen** en vul je Google Places API Key en Place ID in.
+== Installation ==  
+1. Upload de pluginmap `google-rating-dynamic-tags-elementor-plugin` naar `/wp-content/plugins/`.  
+2. Activeer via **Plugins → Geïnstalleerde plugins**.  
+3. (Optioneel) Installeer Elementor Pro voor Dynamic Tag-ondersteuning.  
+4. Ga naar **Google Rating → Instellingen** en voeg je **API Key** en **Place ID(s)** toe.
 
-== Screenshots ==
-1. **Banner in modal**
-   ![Banner](screenshot-1.png)
-2. **Instellingenpagina**
-   ![Instellingen](screenshot-2.png)
-3. **Elementor Dynamic Tag**
-   ![Elementor Dynamic Tag](screenshot-3.png)
+== Screenshots ==  
+1. Instellingenpagina met meerdere locaties en live statuscontrole  
+2. Weergave van gemiddelde score als ster en reviewaantal op frontend  
+3. Elementor bewerkingsomgeving met Dynamic Tag-selector
 
-== Changelog ==
+== Changelog ==  
+= 2.0.2 =
+* ✅ **Fix**: Check-knop werkt nu per bedrijfslocatie en onthoudt status
+* 🛠️ **Tweak**: Nieuwe bedrijven krijgen standaard een rood kruis tot gecontroleerd
+* 💄 **UI**: Statusicoontjes nu consistent rood/groen + verbetering styling + bugfix dubbele rijen
+
+= 2.0.1 =
+* ✨ **Nieuw**: Toon alle locaties tegelijk in één Dynamic Tag (via “Alle”)
+* 🔧 **Verbetering**: Locatielabel optioneel, code opgeschoond, betere validatie
+* 🐞 **Fix**: Dynamic tag dropdown werkt correct bij meerdere custom tags
+
+= 2.0.0 =
+* ✨ **Nieuw**: Ondersteuning voor meerdere bedrijven (Place IDs)
+* 🔁 **Verbetering**: Volledige herstructurering van admin-settings
+
 = 1.5.6 =
-* Integratie met Plugin Update Checker v5 voor GitHub Releases
-* Eigen plugin-icoon en screenshots in de **View Details** modal
+* 🧩 **Nieuw**: Plugin Update Checker v5 integratie (GitHub Updates)
+* 💬 **Tweak**: Nieuwe uitleg-tab & changelog-tab
 
 = 1.5.4 =
-* Real-time statusicoontjes voor API Key & Place ID
+* ✅ **Nieuw**: Real-time statusicoontjes voor API Key & Place ID
 
 = 1.5.3 =
-* Verbeterde verbindingscheck met icoon & foutmeldingen
+* 🔐 **Verbetering**: Verbeterde verbindingscheck met icoon & foutmeldingen
 
 = 1.5.2 =
-* Fix: verwijderde niet-werkende Test/Ververs knoppen
+* 🧹 **Fix**: Oude test/ververs knoppen verwijderd
 
 = 1.5.1 =
-* Tweak: shortcode-registratie hersteld
+* 🛠️ **Fix**: Shortcode correct opnieuw geregistreerd
 
 = 1.5.0 =
-* Ondersteuning GitHub Releases via Update URI
+* 🚀 **Nieuw**: GitHub Releases ondersteuning via Plugin URI
 
-== Upgrade Notice ==
-= 1.5.6 =
-Gebruik nu de nieuwe update-checker; zorg dat `Parsedown.php` aanwezig is in `plugin-update-checker/Puc/v5p5/`.
+== Frequently Asked Questions ==  
+= Hoe toon ik de rating als ster? =  
+Gebruik `[google_rating field="rating_star"]` of kies **Gemiddelde score + ster** via Elementor.
 
-== Frequently Asked Questions ==
-= Hoe toon ik de rating als ster? =
-Gebruik `[google_rating field="rating_star"]` of selecteer **Gemiddelde score + ster** in Elementor.
+= Hoe voeg ik meerdere locaties toe? =  
+Ga naar **Google Rating → Instellingen** en voeg daar meerdere bedrijfsnamen en Place IDs toe.
 
-== Screens ==
+= Hoe krijg ik een Place ID en API Key? =  
+• API Key aanvragen: https://console.cloud.google.com/  
+• Place ID opzoeken: https://developers.google.com/maps/documentation/places/web-service/place-id  
 
-== Support ==
-Rapporteer bugs of feature-requests via de GitHub Issues-pagina: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/issues
+== Upgrade Notice ==  
+= 2.0.2 =  
+Belangrijke verbeteringen aan checkfunctionaliteit en validatie. Aanbevolen voor alle gebruikers.
 
+== Support ==  
+Meld bugs of verzoeken via GitHub:  
+https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/issues  
