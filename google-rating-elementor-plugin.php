@@ -12,6 +12,7 @@
  * GitHub Branch:   main
  * Requires at least: 5.0
  * Tested up to:    6.4
+ * Icon URI:        https://www.websitetoday.nl/wp-content/uploads/2025/05/icon-256x256-1.png
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
