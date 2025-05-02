@@ -1,121 +1,105 @@
-jQuery(document).ready(function($){
-    // Toggle visibility van wachtwoord‑velden
-    $(document).on('click', '.toggle-visibility', function(){
-        var fieldID = $(this).data('field');
-        var $input  = $('#' + fieldID);
-        var type    = $input.attr('type') === 'password' ? 'text' : 'password';
+jQuery(document).ready(function($) {
+    console.log('✅ gre-admin.js geladen');
+
+    // Toggle visibility voor wachtwoordvelden
+    $(document).on('click', '.toggle-visibility', function() {
+        const fieldID = $(this).data('field');
+        const $input = $('#' + fieldID);
+        const type = $input.attr('type') === 'password' ? 'text' : 'password';
         $input.attr('type', type);
     });
 
-    // Status‑icoon updaten
-    function updateStatusIcon($icon, ok) {
-        $icon
-            .removeClass('dashicons-yes green dashicons-no-alt red')
-            .addClass(ok ? 'dashicons-yes green' : 'dashicons-no-alt red');
+    // Helper: statusicoon bijwerken
+    function updateIcon($icon, status) {
+        $icon.removeClass('dashicons-update dashicons-yes dashicons-no-alt green red');
+        if (status === true) {
+            $icon.addClass('dashicons-yes green');
+        } else if (status === false) {
+            $icon.addClass('dashicons-no-alt red');
+        } else {
+            $icon.text('–');
+        }
     }
 
-    // AJAX‑check uitvoeren (voor real‑time velden)
-    function checkConnectionIcons() {
-        var apiKey  = $('#' + greSettings.apiKeyField).val().trim();
-        var placeId = $('#' + greSettings.placeIdField).val().trim();
+    // Helper: status ophalen uit localStorage
+    function getStatusFromStorage(placeId) {
+        return localStorage.getItem('gre_connection_' + placeId);
+    }
 
-        if (! apiKey || ! placeId) {
-            updateStatusIcon($('#gre-api-status'), false);
-            updateStatusIcon($('#gre-place-status'), false);
+    // Helper: status opslaan in localStorage
+    function setStatusInStorage(placeId, ok) {
+        if (!placeId) return;
+        localStorage.setItem('gre_connection_' + placeId, ok ? '1' : '0');
+    }
+
+    // Init: bestaande rijen controleren op opgeslagen status
+    $('#gre-places-table tbody tr').each(function() {
+        const $row = $(this);
+        const $input = $row.find('input[name*="[place_id]"]');
+        const placeId = $input.val().trim();
+        const $icon = $row.find('.gre-status-icon');
+        const saved = getStatusFromStorage(placeId);
+        if (saved === '1') {
+            updateIcon($icon, true);
+        } else if (saved === '0') {
+            updateIcon($icon, false);
+        } else {
+            updateIcon($icon, false); // standaard op rood
+        }
+    });
+
+    // Bedrijf toevoegen
+    $('#gre-add-row').on('click', function(e) {
+        e.preventDefault();
+        const $tbody = $('#gre-places-table tbody');
+        const index = $tbody.find('tr').length;
+        const row = `
+            <tr>
+                <td><input name="gre_places[${index}][label]" /></td>
+                <td><input name="gre_places[${index}][place_id]" /></td>
+                <td>
+                    <button type="button" class="button gre-remove-row">×</button>
+                    <button type="button" class="button gre-check-row" style="margin-left:5px;">Check</button>
+                    <span class="gre-status-icon dashicons dashicons-no-alt red" style="margin-left:6px;"></span>
+                </td>
+            </tr>`;
+        $tbody.append(row);
+    });
+
+    // Bedrijf verwijderen
+    $(document).on('click', '.gre-remove-row', function(e) {
+        e.preventDefault();
+        $(this).closest('tr').remove();
+    });
+
+    // Per-bedrijf “Check” knop
+    $(document).on('click', '.gre-check-row', function(e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        const $placeInput = $row.find('input[name*="[place_id]"]');
+        const placeId = $placeInput.val().trim();
+        const apiKey = $('#' + greSettings.apiKeyField).val().trim();
+        const $icon = $row.find('.gre-status-icon');
+
+        if (!placeId || !apiKey) {
+            updateIcon($icon, false);
             return;
         }
 
-        $.post(
-            greSettings.ajaxUrl,
-            {
-                action:   'gre_test_connection',
-                api_key:  apiKey,
-                place_id: placeId
-            },
-            function(response) {
-                var ok = response.success === true;
-                updateStatusIcon($('#gre-api-status'), ok);
-                updateStatusIcon($('#gre-place-status'), ok);
-                // nou ook localStorage updaten bij real‑time check
-                if (ok) {
-                    localStorage.setItem('gre_connection_ok', '1');
-                } else {
-                    localStorage.removeItem('gre_connection_ok');
-                }
-            }
-        );
-    }
+        $icon.removeClass().addClass('gre-status-icon dashicons dashicons-update');
+        console.log('👉 Check klik:', { placeId, apiKey });
 
-    // Click‑handler voor “Controleer verbinding” knop
-    $('#gre-test-connection-button').on('click', function(){
-        var apiKey  = $('#' + greSettings.apiKeyField).val().trim();
-        var placeId = $('#' + greSettings.placeIdField).val().trim();
-        var $result = $('#gre-test-connection-result');
-
-        // direct feedback bij lege velden
-        if (! apiKey || ! placeId) {
-            $result
-                .text('Vul API Key en Place ID in.')
-                .css('color', '#dc3545');
-            updateStatusIcon($('#gre-api-status'), false);
-            updateStatusIcon($('#gre-place-status'), false);
-            localStorage.removeItem('gre_connection_ok');
-            return;
-        }
-
-        // knop tijdelijk disablen en “laden” indicatie
-        $(this).prop('disabled', true);
-        $result.text('Even geduld…').css('color', '');
-
-        // AJAX‑call
-        $.post(
-            greSettings.ajaxUrl,
-            {
-                action:   'gre_test_connection',
-                api_key:  apiKey,
-                place_id: placeId
-            },
-            function(response) {
-                var ok = response.success === true;
-                // tekstuele feedback
-                $result
-                    .text(response.data)
-                    .css('color', ok ? '#28a745' : '#dc3545');
-                // iconen updaten
-                updateStatusIcon($('#gre-api-status'), ok);
-                updateStatusIcon($('#gre-place-status'), ok);
-                // localStorage bijhouden
-                if (ok) {
-                    localStorage.setItem('gre_connection_ok', '1');
-                } else {
-                    localStorage.removeItem('gre_connection_ok');
-                }
-            }
-        ).always(() => {
-            $('#gre-test-connection-button').prop('disabled', false);
+        $.post(greSettings.ajaxUrl, {
+            action: 'gre_test_connection',
+            api_key: apiKey,
+            place_id: placeId
+        }, function(response) {
+            console.log('✅ AJAX response:', response);
+            updateIcon($icon, response.success);
+            setStatusInStorage(placeId, response.success);
+        }).fail(function() {
+            updateIcon($icon, false);
+            setStatusInStorage(placeId, false);
         });
     });
-
-    // Real‑time validatie op blur / input (debounce)
-    var $fields = $('#' + greSettings.apiKeyField + ', #' + greSettings.placeIdField);
-    $fields.on('blur', checkConnectionIcons);
-    $fields.on('input paste', function() {
-        // zodra er getypt wordt: clear vorige status
-        localStorage.removeItem('gre_connection_ok');
-        updateStatusIcon($('#gre-api-status'), false);
-        updateStatusIcon($('#gre-place-status'), false);
-
-        clearTimeout($.data(this, 'timer'));
-        var wait = setTimeout(checkConnectionIcons, 800);
-        $(this).data('timer', wait);
-    });
-
-    // Bij laden: toon vorige succesvolle status als die er is
-    if ( localStorage.getItem('gre_connection_ok') === '1' ) {
-        updateStatusIcon($('#gre-api-status'), true);
-        updateStatusIcon($('#gre-place-status'), true);
-        $('#gre-test-connection-result')
-            .text('Verbonden! ✔️')
-            .css('color', '#28a745');
-    }
 });

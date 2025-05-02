@@ -4,7 +4,7 @@
  * Plugin URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin.git
  * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) als Elementor Dynamic Tag en via shortcode (meetbaar en stylebaar).
- * Version:         2.0.1
+ * Version:         2.0.2
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
  * Text Domain:     gre
@@ -52,16 +52,26 @@ require_once __DIR__ . '/includes/admin-settings.php';
 
 // Admin scripts
 add_action( 'admin_enqueue_scripts', function( $hook ) {
-    if ( $hook !== 'toplevel_page_gre_options' ) return;
-    wp_enqueue_script( 'gre-admin-js', plugin_dir_url( __FILE__ ) . 'assets/js/gre-admin.js', [ 'jquery' ], '1.0', true );
-    wp_localize_script( 'gre-admin-js', 'greSettings', [
-        'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-    ] );
+    global $plugin_page;
+
+    if ( $hook === 'toplevel_page_gre_options' ) {
+        wp_enqueue_script(
+            'gre-admin-js',
+            plugins_url( 'assets/js/gre-admin.js', __FILE__ ),
+            [ 'jquery' ],
+            filemtime( plugin_dir_path( __FILE__ ) . 'assets/js/gre-admin.js' ),
+            true
+        );
+
+        wp_localize_script( 'gre-admin-js', 'greSettings', [
+            'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+            'apiKeyField'   => GRE_OPT_API_KEY,
+            'placeSelector' => 'input[name^="gre_places"][name$="[place_id]"]'
+        ] );
+    }
 });
 
-add_action( 'admin_head', function() {
-    echo '<style>.gre-status-icon { font-size: 18px; vertical-align: middle; margin-left: 6px; } .gre-status-icon.green { color: #28a745; } .gre-status-icon.red { color: #dc3545; }</style>';
-});
+
 
 // AJAX test connection
 add_action( 'wp_ajax_gre_test_connection', function() {
@@ -69,13 +79,18 @@ add_action( 'wp_ajax_gre_test_connection', function() {
     $api_key  = sanitize_text_field( $_POST['api_key'] ?? '' );
     $place_id = sanitize_text_field( $_POST['place_id'] ?? '' );
     if ( ! $api_key || ! $place_id ) wp_send_json_error( 'Vul API Key en Place ID in.' );
-    $url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={$place_id}&fields=rating,user_ratings_total,opening_hours&language=nl&key={$api_key}";
+
+    $url = "https://maps.googleapis.com/maps/api/place/details/json?place_id={$place_id}&fields=rating&language=nl&key={$api_key}";
     $res = wp_remote_get( $url );
+
     if ( is_wp_error( $res ) ) wp_send_json_error( $res->get_error_message() );
+
     $data = json_decode( wp_remote_retrieve_body( $res ), true );
-    if ( ! empty( $data['result'] ) ) wp_send_json_success( 'Verbonden! ✔️' );
+    if ( ! empty( $data['result'] ) ) wp_send_json_success( 'Verbonden!' );
+
     wp_send_json_error( 'Geen resultaten gevonden.' );
 });
+
 
 // Fetch Google Place Data
 function gre_fetch_google_place_data( $place_id = null ) {

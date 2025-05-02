@@ -25,7 +25,6 @@ add_action( 'admin_init', function() {
     add_settings_field( GRE_OPT_API_KEY, __( 'API Key', 'gre' ), 'gre_api_key_render', 'gre_settings', 'gre_section' );
     add_settings_field( GRE_OPT_PLACES, __( 'Bedrijven', 'gre' ), 'gre_places_render', 'gre_settings', 'gre_section' );
     add_settings_field( 'gre_enable_shortcode', __( 'Shortcode inschakelen', 'gre' ), 'gre_enable_shortcode_render', 'gre_settings', 'gre_section' );
-    add_settings_field( 'gre_test_connection', __( 'Verbinding testen', 'gre' ), 'gre_test_connection_render', 'gre_settings', 'gre_section' );
 } );
 
 // Notices
@@ -53,55 +52,57 @@ function gre_sanitize_places( $input ) {
 
 function gre_api_key_render() {
     $val = get_option( GRE_OPT_API_KEY, '' );
-    printf('<input type="password" id="%1$s" name="%1$s" value="%2$s" class="regular-text" /> <span class="toggle-visibility" data-field="%1$s">👁️</span> <span id="gre-api-status" class="gre-status-icon dashicons"></span>', esc_attr( GRE_OPT_API_KEY ), esc_attr( $val ) );
+    printf(
+        '<input type="password" id="%1$s" name="%1$s" value="%2$s" class="regular-text" />
+         <span class="toggle-visibility" data-field="%1$s">👁️</span>
+         <span id="gre-api-status" class="gre-status-icon dashicons"></span>',
+        esc_attr( GRE_OPT_API_KEY ),
+        esc_attr( $val )
+    );
 }
 
 function gre_enable_shortcode_render() {
     $val = get_option( 'gre_enable_shortcode', 1 );
-    printf('<input type="checkbox" id="gre_enable_shortcode" name="gre_enable_shortcode" value="1" %s /> <label for="gre_enable_shortcode">%s</label>', checked( 1, $val, false ), esc_html__( 'Enable [google_rating] shortcode', 'gre' ));
-}
-
-function gre_test_connection_render() {
-    echo '<button type="button" class="button button-secondary" id="gre-test-connection-button">' . esc_html__( 'Controleer verbinding', 'gre' ) . '</button><span id="gre-test-connection-result" style="margin-left:12px; vertical-align:middle;"></span>';
+    printf(
+        '<input type="checkbox" id="gre_enable_shortcode" name="gre_enable_shortcode" value="1" %s />
+         <label for="gre_enable_shortcode">%s</label>',
+        checked( 1, $val, false ),
+        esc_html__( 'Enable [google_rating] shortcode', 'gre' )
+    );
 }
 
 function gre_places_render() {
     $places = get_option( GRE_OPT_PLACES, [] );
     ?>
     <table id="gre-places-table" class="widefat">
-        <thead><tr><th><?php _e('Label','gre');?></th><th><?php _e('Place ID','gre');?></th><th></th></tr></thead>
+        <thead>
+            <tr>
+                <th><?php _e('Label','gre');?></th>
+                <th><?php _e('Place ID','gre');?></th>
+                <th><?php _e('Acties','gre');?></th>
+            </tr>
+        </thead>
         <tbody>
         <?php foreach ( $places as $i => $p ): ?>
             <tr>
                 <td><input name="gre_places[<?php echo $i; ?>][label]" value="<?php echo esc_attr( $p['label'] ); ?>" /></td>
                 <td><input name="gre_places[<?php echo $i; ?>][place_id]" value="<?php echo esc_attr( $p['place_id'] ); ?>" /></td>
-                <td><button class="button gre-remove-row">×</button></td>
+                <td>
+                    <button type="button" class="button gre-remove-row" title="<?php esc_attr_e('Verwijder deze rij','gre'); ?>">×</button>
+                    <button type="button" class="button gre-check-row" data-index="<?php echo $i; ?>" style="margin-left: 5px;">Check</button>
+                    <span class="gre-status-icon dashicons dashicons-no-alt red" style="margin-left: 6px;"></span>
+                </td>
             </tr>
         <?php endforeach; ?>
         </tbody>
         <tfoot>
-            <tr><td colspan="3"><button class="button button-secondary" id="gre-add-row"><?php _e('Bedrijf toevoegen','gre');?></button></td></tr>
+            <tr>
+                <td colspan="3">
+                    <button class="button button-secondary" type="button" id="gre-add-row"><?php _e('Bedrijf toevoegen','gre');?></button>
+                </td>
+            </tr>
         </tfoot>
     </table>
-    <script>
-    (function($){
-        $('#gre-add-row').on('click', function(e){
-            e.preventDefault();
-            var $tbody = $('#gre-places-table tbody');
-            var index  = $tbody.find('tr').length;
-            var row    = '<tr>' +
-                '<td><input name="gre_places['+index+'][label]" /></td>' +
-                '<td><input name="gre_places['+index+'][place_id]" /></td>' +
-                '<td><button class="button gre-remove-row">×</button></td>' +
-                '</tr>';
-            $tbody.append(row);
-        });
-        $(document).on('click','.gre-remove-row',function(e){
-            e.preventDefault();
-            $(this).closest('tr').remove();
-        });
-    })(jQuery);
-    </script>
     <?php
 }
 
