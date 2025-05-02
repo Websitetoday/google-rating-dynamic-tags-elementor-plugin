@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:     Google Rating Dynamic Tags Elementor
- * Plugin URI:      https://www.websitetoday.nl/
+ * Plugin URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin.git
  * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) als Elementor Dynamic Tag en via shortcode (meetbaar en stylebaar).
  * Version:         1.5.6
@@ -14,26 +14,31 @@
  * Tested up to:    6.4
  */
 
-// EXIT bij direct file-access
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+    exit; // Exit if accessed directly
 }
 
-// PUC-library includen
-require_once __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
+// ──────────────────────────────────────────────────────────
+//  Plugin Update Checker v5.5 Integration (YahnisElsts PUC)
+// ──────────────────────────────────────────────────────────
 
-// Stap 3: Parsedown autoloaden voor PUC v5.5
+// Load the PUC library and Parsedown parser for release notes
+require_once __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
 if ( ! class_exists( 'Parsedown' ) ) {
     require_once __DIR__ . '/plugin-update-checker/Puc/v5p5/Parsedown.php';
 }
 
-// Gebruik PUC v5 factory
-$updateChecker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+// Use the PUC v5 factory to register your public GitHub repo
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$updateChecker = PucFactory::buildUpdateChecker(
     'https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/',
     __FILE__,
     'google-rating-dynamic-tags-elementor-plugin'
 );
-$updateChecker->setBranch('main');
+
+// Point to the branch you use for stable releases
+$updateChecker->setBranch( 'main' );
 
 // Inject eigen plugin-icon in de "View Details" modal
 add_filter( 'plugins_api', function( $res, $action, $args ) {
