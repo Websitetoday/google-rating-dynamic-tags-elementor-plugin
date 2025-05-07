@@ -1,6 +1,14 @@
 jQuery(document).ready(function($) {
     console.log('✅ gre-admin.js geladen');
 
+    // Inject CSS voor status-icoontjes en spinner-animatie
+    const css = '\
+.gre-status-icon.green { color: #46b450; }\
+.gre-status-icon.red { color: #dc3232; }\
+.gre-status-icon.dashicons-update { color: #0073aa; animation: spin 1s infinite linear; }\
+@keyframes spin { from {transform:rotate(0deg);} to {transform:rotate(359deg);} }';
+    $('head').append('<style>' + css + '</style>');
+
     // Toggle visibility voor wachtwoordvelden
     $(document).on('click', '.toggle-visibility', function() {
         const fieldID = $(this).data('field');
@@ -11,13 +19,14 @@ jQuery(document).ready(function($) {
 
     // Helper: statusicoon bijwerken
     function updateIcon($icon, status) {
-        $icon.removeClass('dashicons-update dashicons-yes dashicons-no-alt green red');
+        // Reset naar basis-dashicons
+        $icon.removeClass().addClass('gre-status-icon dashicons');
         if (status === true) {
             $icon.addClass('dashicons-yes green');
         } else if (status === false) {
             $icon.addClass('dashicons-no-alt red');
         } else {
-            $icon.text('–');
+            $icon.addClass('dashicons-update');
         }
     }
 
@@ -35,16 +44,16 @@ jQuery(document).ready(function($) {
     // Init: bestaande rijen controleren op opgeslagen status
     $('#gre-places-table tbody tr').each(function() {
         const $row = $(this);
-        const $input = $row.find('input[name*="[place_id]"]');
-        const placeId = $input.val().trim();
+        const placeId = $row.find('input[name*="[place_id]"]').val().trim();
         const $icon = $row.find('.gre-status-icon');
         const saved = getStatusFromStorage(placeId);
+
         if (saved === '1') {
             updateIcon($icon, true);
         } else if (saved === '0') {
             updateIcon($icon, false);
         } else {
-            updateIcon($icon, false); // standaard op rood
+            updateIcon($icon, null); // toont spinner voor ongecheckte rijen
         }
     });
 
@@ -60,7 +69,7 @@ jQuery(document).ready(function($) {
                 <td>
                     <button type="button" class="button gre-remove-row">×</button>
                     <button type="button" class="button gre-check-row" style="margin-left:5px;">Check</button>
-                    <span class="gre-status-icon dashicons dashicons-no-alt red" style="margin-left:6px;"></span>
+                    <span class="gre-status-icon dashicons dashicons-update" style="margin-left:6px;"></span>
                 </td>
             </tr>`;
         $tbody.append(row);
@@ -76,8 +85,7 @@ jQuery(document).ready(function($) {
     $(document).on('click', '.gre-check-row', function(e) {
         e.preventDefault();
         const $row = $(this).closest('tr');
-        const $placeInput = $row.find('input[name*="[place_id]"]');
-        const placeId = $placeInput.val().trim();
+        const placeId = $row.find('input[name*="[place_id]"]').val().trim();
         const apiKey = $('#' + greSettings.apiKeyField).val().trim();
         const $icon = $row.find('.gre-status-icon');
 
@@ -86,7 +94,7 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        $icon.removeClass().addClass('gre-status-icon dashicons dashicons-update');
+        updateIcon($icon, null); // spinner tonen tijdens het testen
         console.log('👉 Check klik:', { placeId, apiKey });
 
         $.post(greSettings.ajaxUrl, {
@@ -95,8 +103,13 @@ jQuery(document).ready(function($) {
             place_id: placeId
         }, function(response) {
             console.log('✅ AJAX response:', response);
-            updateIcon($icon, response.success);
-            setStatusInStorage(placeId, response.success);
+            // Behandel ZERO_RESULTS / Geen resultaten als succesvolle connectie
+            let ok = response.success;
+            if (!ok && response.data && response.data.indexOf('Geen resultaten') !== -1) {
+                ok = true;
+            }
+            updateIcon($icon, ok);
+            setStatusInStorage(placeId, ok);
         }).fail(function() {
             updateIcon($icon, false);
             setStatusInStorage(placeId, false);

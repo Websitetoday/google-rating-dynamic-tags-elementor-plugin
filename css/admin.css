@@ -1,0 +1,82 @@
+/* admin.css: Styling voor Google Rating admin-tabel */
+
+#gre-places-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #ccd0d4;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+}
+
+#gre-places-table thead th {
+    background-color: #f1f1f1;
+    color: #333333;
+    font-weight: 600;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ccd0d4;
+}
+
+#gre-places-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+#gre-places-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+#gre-places-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+#gre-places-table tbody tr:hover {
+    background-color: #f7f7f7;
+}
+
+#gre-places-table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e1e1e1;
+    vertical-align: middle;
+}
+
+#gre-places-table input[type="text"],
+#gre-places-table input[type="password"] {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+#gre-places-table button.button {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1;
+}
+
+#gre-places-table .gre-status-icon {
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+/* Toggle visibility icoon */
+.toggle-visibility {
+    cursor: pointer;
+    margin-left: 8px;
+    font-size: 16px;
+    vertical-align: middle;
+}
+
+/* Responsive: scrollbalk op kleinere schermen */
+@media (max-width: 782px) {
+    #gre-places-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

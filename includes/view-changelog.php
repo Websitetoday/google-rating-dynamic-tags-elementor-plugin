@@ -24,6 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 <div class="gre-changelog">
 <h2><?php esc_html_e( 'Changelog', 'gre' ); ?></h2>
 <ul>
+    <li><span class="gre-label gre-new">New</span><strong>2.1.0</strong> – <?php esc_html_e( 'Batch fetching van alle Place Details via WP-Cron taak op basis van de cache-interval instelling; Configurabele cache-interval dropdown (1, 6, 12, 24 uur of elke week); Admin CSS voor moderne tabelstyling en responsive weergave; Tooltips en subtiele beschrijvingen bij alle instellingen en tabelvelden; gre-admin.js geüpdatet met spinner-icoon, kleurclasses en dynamische TTL voor test-transient; CSS en JS geladen via admin_enqueue_scripts hook op juiste admin-pagina; gre_fetch_google_place_data() aangepast naar batch-transient (gre_all_places_data), waardoor paginalaag geen live API-calls meer uitvoert.', 'gre' ); ?></li>
     <li><span class="gre-label gre-new">New</span><strong>2.0.2</strong> – <?php esc_html_e( 'Controleer individuele bedrijven via een "Check"-knop met statusicoon. Resultaat wordt onthouden tot de Place ID wijzigt.', 'gre' ); ?></li>
     <li><span class="gre-label gre-improve">Improvement</span><strong>2.0.1</strong> – <?php esc_html_e( 'Bedrijfsnaam zichtbaar bij Elementor Dynamic Tag "Google Rating".', 'gre' ); ?></li>
     <li><span class="gre-label gre-new">New</span><strong>2.0.0</strong> – <?php esc_html_e( 'Ondersteuning voor meerdere bedrijven met eigen Place IDs via shortcode en Dynamic Tags.', 'gre' ); ?></li>
