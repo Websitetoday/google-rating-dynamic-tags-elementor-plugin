@@ -24,76 +24,88 @@ class Google_Opening_Hours_Tag extends Tag {
     }
 
     protected function register_controls() {
-        $this->add_control( 'place', [
-            'label'   => __( 'Bedrijf', 'gre' ),
-            'type'    => Controls_Manager::SELECT,
-            'options' => gre_get_places_for_select(),
-            'default' => '',
-        ] );
+        // Keuze weergave-modus
+        $this->add_control(
+            'display_mode',
+            [
+                'label'   => __( 'Weergave', 'gre' ),
+                'type'    => Controls_Manager::SELECT,
+                'options' => [
+                    'monday'    => __( 'Maandag', 'gre' ),
+                    'tuesday'   => __( 'Dinsdag', 'gre' ),
+                    'wednesday' => __( 'Woensdag', 'gre' ),
+                    'thursday'  => __( 'Donderdag', 'gre' ),
+                    'friday'    => __( 'Vrijdag', 'gre' ),
+                    'saturday'  => __( 'Zaterdag', 'gre' ),
+                    'sunday'    => __( 'Zondag', 'gre' ),
+                    'today'     => __( 'Vandaag', 'gre' ),
+                    'full_week' => __( 'Volledige week', 'gre' ),
+                ],
+                'default' => 'monday',
+            ]
+        );
 
-        $this->add_control( 'display_mode', [
-            'label'   => __( 'Weergave', 'gre' ),
-            'type'    => Controls_Manager::SELECT,
-            'options' => [
-                'monday'    => __( 'Maandag', 'gre' ),
-                'tuesday'   => __( 'Dinsdag', 'gre' ),
-                'wednesday' => __( 'Woensdag', 'gre' ),
-                'thursday'  => __( 'Donderdag', 'gre' ),
-                'friday'    => __( 'Vrijdag', 'gre' ),
-                'saturday'  => __( 'Zaterdag', 'gre' ),
-                'sunday'    => __( 'Zondag', 'gre' ),
-                'today'     => __( 'Vandaag', 'gre' ),
-                'full_week' => __( 'Volledige week', 'gre' ),
-            ],
-            'default' => 'monday',
-        ] );
+        // Toon dagnaam bij dagweergave
+        $this->add_control(
+            'show_day_label',
+            [
+                'label'        => __( 'Toon dagnaam', 'gre' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => __( 'Ja', 'gre' ),
+                'label_off'    => __( 'Nee', 'gre' ),
+                'return_value' => 'yes',
+                'default'      => 'yes',
+            ]
+        );
 
-        $this->add_control( 'show_day_label', [
-            'label'        => __( 'Toon dagnaam', 'gre' ),
-            'type'         => Controls_Manager::SWITCHER,
-            'label_on'     => __( 'Ja', 'gre' ),
-            'label_off'    => __( 'Nee', 'gre' ),
-            'return_value' => 'yes',
-            'default'      => 'yes',
-        ] );
+        // Kleur van de dagnaam
+        $this->add_control(
+            'label_color',
+            [
+                'label'   => __( 'Kleur dagnaam', 'gre' ),
+                'type'    => Controls_Manager::COLOR,
+                'default' => '#333333',
+            ]
+        );
 
-        $this->add_control( 'label_color', [
-            'label'   => __( 'Kleur dagnaam', 'gre' ),
-            'type'    => Controls_Manager::COLOR,
-            'default' => '#333333',
-        ] );
+        // Kleur van de uren
+        $this->add_control(
+            'hours_color',
+            [
+                'label'   => __( 'Kleur tijd', 'gre' ),
+                'type'    => Controls_Manager::COLOR,
+                'default' => '#555555',
+            ]
+        );
 
-        $this->add_control( 'hours_color', [
-            'label'   => __( 'Kleur tijd', 'gre' ),
-            'type'    => Controls_Manager::COLOR,
-            'default' => '#555555',
-        ] );
-
-        $this->add_control( 'closed_color', [
-            'label'   => __( 'Kleur "Gesloten"', 'gre' ),
-            'type'    => Controls_Manager::COLOR,
-            'default' => '#ff0000',
-        ] );
+        // Kleur voor gesloten tekst
+        $this->add_control(
+            'closed_color',
+            [
+                'label'   => __( 'Kleur "Gesloten"', 'gre' ),
+                'type'    => Controls_Manager::COLOR,
+                'default' => '#ff0000',
+            ]
+        );
     }
 
     public function render() {
-        $settings     = $this->get_settings_for_display();
-        $place        = $settings['place'];
-        $mode         = $settings['display_mode'];
-        $show_day     = ( 'yes' === $settings['show_day_label'] );
-        $label_color  = esc_attr( $settings['label_color'] );
-        $hours_color  = esc_attr( $settings['hours_color'] );
-        $closed_color = esc_attr( $settings['closed_color'] );
-
-        $data = gre_fetch_google_place_data( $place );
+        $data     = gre_fetch_google_place_data();
+        $settings = $this->get_settings_for_display();
 
         if ( ! $data || empty( $data['opening_hours']['weekday_text'] ) ) {
             echo esc_html__( 'Geen openingstijden beschikbaar.', 'gre' );
             return;
         }
 
-        $lines = $data['opening_hours']['weekday_text'];
+        $lines         = $data['opening_hours']['weekday_text'];
+        $mode          = $settings['display_mode'];
+        $show_day      = ( 'yes' === $settings['show_day_label'] );
+        $label_color   = esc_attr( $settings['label_color'] );
+        $hours_color   = esc_attr( $settings['hours_color'] );
+        $closed_color  = esc_attr( $settings['closed_color'] );
 
+        // Volledige week
         if ( 'full_week' === $mode ) {
             echo '<div style="font-family: Lato, sans-serif; font-size: 16px; line-height: 1.6; max-width: 250px;">';
             foreach ( $lines as $line ) {
@@ -112,6 +124,7 @@ class Google_Opening_Hours_Tag extends Tag {
             return;
         }
 
+        // Vandaag
         if ( 'today' === $mode ) {
             $today_name = mb_strtolower( date_i18n( 'l' ), 'UTF-8' );
             foreach ( $lines as $line ) {
@@ -119,9 +132,11 @@ class Google_Opening_Hours_Tag extends Tag {
                     if ( stripos( mb_strtolower( $line, 'UTF-8' ), 'gesloten' ) !== false ) {
                         echo '<div><span style="color:' . $closed_color . ';">' . esc_html__( 'Vandaag zijn we gesloten.', 'gre' ) . '</span></div>';
                     } elseif ( preg_match( '/(\d{1,2}:\d{2})\s*[\x{2013}\x{2014}-]\s*(\d{1,2}:\d{2})/u', $line, $m ) ) {
+                        $open  = $m[1];
+                        $close = $m[2];
                         echo '<div>';
                         echo '<span style="color:' . $label_color . ';">' . esc_html__( 'Vandaag zijn we open van', 'gre' ) . '</span> ';
-                        echo '<span style="color:' . $hours_color . ';">' . esc_html( $m[1] ) . ' tot ' . esc_html( $m[2] ) . '</span>';
+                        echo '<span style="color:' . $hours_color . ';">' . esc_html( $open ) . ' tot ' . esc_html( $close ) . '</span>';
                         echo '</div>';
                     }
                     break;
@@ -130,6 +145,7 @@ class Google_Opening_Hours_Tag extends Tag {
             return;
         }
 
+        // Specifieke dag
         $map = [
             'monday'    => 0,
             'tuesday'   => 1,

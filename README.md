@@ -1,102 +1,103 @@
-# Google Rating Dynamic Tags Elementor
+=== Google Rating Dynamic Tags Elementor ===
+Contributors: Websitetoday.nl
+Tags: elementor, google, rating, dynamic-tags, cache, place-id
+Requires at least: 5.0
+Tested up to: 6.4
+Stable tag: main
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-**Contributors:** Websitetoday.nl
-**Tags:** elementor, google, rating, dynamic-tags
-**Requires at least:** 5.0
-**Tested up to:** 6.4
-**Stable tag:** main
-**License:** GPLv2 or later
-**License URI:** [https://www.gnu.org/licenses/gpl-2.0.html](https://www.gnu.org/licenses/gpl-2.0.html)
+== Description ==
+Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) rechtstreeks in je content:
 
-## Description
+* **Elementor Dynamic Tag**: gebruik de Google Rating als tekst, nummer, ster of gecombineerde weergave.
+* **Shortcode**: voeg de rating of het aantal reviews toe via `[google_rating field="rating_star"]`.
+* **Cache & Force Refresh**: stel in hoe lang data gecached blijft (1 uur, 12 uur, 24 uur of 1 week) en ververs de data handmatig via de “Ververs data” knop.
+* **Uninstall Cleanup**: bij deïnstallatie verwijdert de plugin alle instellingen en transients, zodat je opnieuw met een schone lei kunt beginnen.
+* **Automatische updates** via GitHub Releases (PUC v5).
 
-Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en openingstijden) van jouw bedrijf op je WordPress-website.
+== Installation ==
+1. Upload de map `google-rating-dynamic-tags-elementor-plugin` naar de `/wp-content/plugins/` directory.  
+2. Activeer de plugin via **Plugins → Geïnstalleerde plugins**.  
+3. (Optioneel) Installeer Elementor Pro als je de Dynamic Tag-functionaliteit wilt gebruiken.  
+4. Ga naar **Google Rating → Instellingen** en vul je Google Places **API Key** en **Place ID** in.  
+5. Stel onder **Cache duur** de gewenste TTL in (1 uur, 12 uur, 24 uur of 1 week).  
+6. Klik op **Ververs data** om direct de nieuwste gegevens uit Google op te halen.
 
-* **Elementor Dynamic Tags** voor Pro-gebruikers (tekst & nummer)
-* **Shortcode** met vier weergaveopties
-* **Configurabele cache-interval** (1, 6, 12, 24 uur of elke week)
-* **Batch fetching** via WP-Cron vermindert API-calls tot 0 per paginalaag
-* **Modern admin UI** met tooltips en subtiele beschrijvingen
-* **Automatische updates** via GitHub Releases (PUC v5)
+== Screenshots ==
+1. **Banner in modal**  
+   ![Banner](screenshot-1.png)  
+2. **Instellingenpagina** (tooltips, API Key, Place ID, cache dropdown & ververs knop)  
+   ![Instellingen](screenshot-2.png)  
+3. **Elementor Dynamic Tag**  
+   ![Elementor Dynamic Tag](screenshot-3.png)  
+4. **Ververs data knop**  
+   ![Ververs data](screenshot-4.png)  
 
-## Installation
+== Changelog ==
+= 3.0.0 =
+* Opgeknipt: admin-pagina’s modulair via separate `includes/admin/*.php`.  
+* Uninstall: `uninstall.php` verwijdert alle plugin-opties en transients bij deïnstallatie.  
+* Ondersteuning voor meerdere bedrijven verwijderd – nu enkel één Place ID.  
+* Info-tooltips en directe links toegevoegd bij **API Key** en **Place ID** velden.  
+* **Cache duur** dropdown (1, 12, 24 uur of 1 week) en **Ververs data** knop toegevoegd.
 
-### 1. Via GitHub Releases
+= 2.1.0 =
+* Batch fetching van alle Place Details via WP-Cron taak op basis van de cache-interval instelling.  
+* Configurabele cache-interval dropdown (1, 6, 12, 24 uur of elke week).  
+* Admin CSS voor moderne tabelstyling en responsive weergave.  
+* Tooltips en subtiele beschrijvingen bij alle instellingen en tabelvelden.  
+* `gre-admin.js` geüpdatet met spinner-icoon, kleurclasses en dynamische TTL voor test-transient.  
+* CSS en JS geladen via `admin_enqueue_scripts` hook op juiste admin-pagina.  
+* `gre_fetch_google_place_data()` aangepast naar batch-transient (`gre_all_places_data`), waardoor paginalaag geen live API-calls meer uitvoert.
 
-1. Ga naar de [Releases-pagina](https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/releases).
-2. Download de nieuwste `.zip`-versie.
-3. Upload de `.zip` via **Plugins → Nieuwe plugin → Plugin uploaden**.
-4. Activeer de plugin via **Plugins → Geïnstalleerde plugins**.
+= 2.0.2 =
+* Controleer individuele bedrijven via een "Check"-knop met statusicoon. Resultaat wordt onthouden tot de Place ID wijzigt.
 
-### 2. Handmatig
+= 2.0.1 =
+* Bedrijfsnaam zichtbaar bij Elementor Dynamic Tag "Google Rating".
 
-1. Clone of download deze repository:
+= 2.0.0 =
+* Ondersteuning voor meerdere bedrijven met eigen Place IDs via shortcode en Dynamic Tags.
 
-   ```bash
-   git clone https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin.git
-   ```
-2. Upload de map `google-rating-dynamic-tags-elementor-plugin` naar `/wp-content/plugins/`.
-3. Activeer de plugin via **Plugins → Geïnstalleerde plugins**.
+= 1.5.6 =
+* Integratie met Plugin Update Checker v5 voor GitHub Releases.  
+* Eigen plugin-icoon en screenshots in de **View Details** modal.
 
-## Configuration
+= 1.5.4 =
+* Real-time statusicoontjes voor API Key & Place ID.
 
-1. Navigeer in de WordPress admin naar **Google Rating** in de zijbalk.
-2. Ga naar het tabblad **Instellingen**.
-3. Vul in:
+= 1.5.3 =
+* Verbeterde verbindingscheck met icoon & foutmeldingen.
 
-   * **API Key** — jouw Google Places API Key
-   * **Bedrijven** — voeg labels en Place ID’s toe (tooltips helpen bij het invullen)
-   * **Shortcode inschakelen** — schakel de `[google_rating]`-shortcode in of uit
-   * **Cache-interval** — kies hoe vaak de plugin nieuwe data ophaalt
-4. Klik op **Opslaan**.
-5. Optioneel: test de verbinding via de **Check**-knop.
+= 1.5.2 =
+* Fix: verwijderde niet-werkende Test/Ververs knoppen.
 
-## Usage
+= 1.5.1 =
+* Tweak: shortcode-registratie hersteld.
 
-### Elementor Dynamic Tag
+= 1.5.0 =
+* Ondersteuning GitHub Releases via Update URI.
 
-1. Open een widget in **Elementor Pro** (tekst of nummer).
-2. Klik op het dynamische tags-icoon (database-icoon).
-3. Selecteer **Google Rating** onder **Site**.
-4. Kies het **Weergaveveld**:
+== Upgrade Notice ==
+= 3.0.0 =
+De admin-pagina’s zijn nu modulair opgebroken en er is een volledige uninstall-cleanup toegevoegd. Bij het upgraden worden oude transients verwijderd en moet je eenmalig je Place ID en cache-instellingen opnieuw controleren.
 
-   * `rating_number` — gemiddelde score als puur getal
-   * `rating_star` — gemiddelde score + ster (bijv. “4.5 ★”)
-   * `count_number` — aantal reviews als puur getal
-   * `both` — `<strong>4.5</strong> ★ 123 reviews`
-5. Pas styling toe en publiceer.
+== Frequently Asked Questions ==
+= Hoe maak ik een API Key aan? =
+Klik op het info-icoon naast het API Key-veld of bezoek:  
+https://console.cloud.google.com/apis/credentials
 
-### Shortcode
+= Hoe vind ik mijn Place ID? =
+Klik op het info-icoon naast het Place ID-veld of bezoek:  
+https://developers.google.com/maps/documentation/places/web-service/place-id
 
-Gebruik de shortcode in een Gutenberg- of Tekstblok:
+= Hoe stel ik de cache-duur in? =
+Gebruik de **Cache duur** dropdown in de instellingen (1 uur, 12 uur, 24 uur of 1 week).
 
-```shortcode
-[google_rating field="rating_star"]
-```
+= Hoe ververs ik de data handmatig? =
+Klik op de **Ververs data** knop onderaan de Instellingen tab.
 
-Beschikbare `field`-opties:
-
-| field           | Output                           |
-| --------------- | -------------------------------- |
-| `rating_number` | Gemiddelde score als nummer      |
-| `rating_star`   | Gemiddelde score + ster          |
-| `count_number`  | Aantal reviews als nummer        |
-| `both`          | Score + aantal reviews als tekst |
-
-## Screenshots
-
-1. **Instellingenpagina** — modern UI met tooltips en beschrijvingen
-2. **Dynamic Tag in Elementor** — kies uit meerdere weergavevelden
-3. **Batch fetching** — ziet geen directe API-calls tijdens paginaweergave
-
-## Changelog
-
-Zie [CHANGELOG.md](CHANGELOG.md) voor details over alle versies.
-
-## Support
-
-Rapporteer issues of feature requests op de [GitHub Issues-pagina](https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/issues).
-
-## License
-
-GPLv2 of hoger. Zie het [LICENSE-bestand](LICENSE) voor details.
+== Support ==
+Rapporteer bugs of feature requests via GitHub Issues:  
+https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/issues
