@@ -35,6 +35,9 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
    ![Ververs data](screenshot-4.png)  
 
 == Changelog ==
+= 3.0.1 =
+* Quick Fix changelog bug
+
 = 3.0.0 =
 * Opgeknipt: admin-pagina’s modulair via separate `includes/admin/*.php`.  
 * Uninstall: `uninstall.php` verwijdert alle plugin-opties en transients bij deïnstallatie.  
