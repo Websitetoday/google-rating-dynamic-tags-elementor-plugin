@@ -13,6 +13,7 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
 * **Elementor Dynamic Tag**: gebruik de Google Rating als tekst, nummer, ster of gecombineerde weergave.
 * **Shortcode**: voeg de rating of het aantal reviews toe via `[google_rating field="rating_star"]`.
 * **Cache & Force Refresh**: stel in hoe lang data gecached blijft (1 uur, 12 uur, 24 uur of 1 week) en ververs de data handmatig via de “Ververs data” knop.
+* **API-call teller**: bekijk in de Instellingen-pagina hoeveel cron- en handmatige ververs-API-calls zijn gedaan en reset ze met één klik.
 * **Uninstall Cleanup**: bij deïnstallatie verwijdert de plugin alle instellingen en transients, zodat je opnieuw met een schone lei kunt beginnen.
 * **Automatische updates** via GitHub Releases (PUC v5).
 
@@ -22,12 +23,13 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
 3. (Optioneel) Installeer Elementor Pro als je de Dynamic Tag-functionaliteit wilt gebruiken.  
 4. Ga naar **Google Rating → Instellingen** en vul je Google Places **API Key** en **Place ID** in.  
 5. Stel onder **Cache duur** de gewenste TTL in (1 uur, 12 uur, 24 uur of 1 week).  
-6. Klik op **Ververs data** om direct de nieuwste gegevens uit Google op te halen.
+6. Klik op **Ververs data** om direct de nieuwste gegevens uit Google op te halen.  
+7. Bekijk onderaan de Instellingen-pagina het aantal API-calls en reset de teller indien gewenst.
 
 == Screenshots ==
 1. **Banner in modal**  
    ![Banner](screenshot-1.png)  
-2. **Instellingenpagina** (tooltips, API Key, Place ID, cache dropdown & ververs knop)  
+2. **Instellingenpagina** (tooltips, API Key, Place ID, cache dropdown & ververs knop + teller)  
    ![Instellingen](screenshot-2.png)  
 3. **Elementor Dynamic Tag**  
    ![Elementor Dynamic Tag](screenshot-3.png)  
@@ -35,8 +37,11 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
    ![Ververs data](screenshot-4.png)  
 
 == Changelog ==
+= 3.0.2 =
+* Feature: API-call teller toegevoegd in Instellingen tab met reset-knop; teller nu onderaan geplaatst; meet alleen cron- en handmatige ververs-data API-calls; vermindering van live API calls door cron-only fetch-model (calls beperkt tot het gekozen cache-interval).
+
 = 3.0.1 =
-* Quick Fix changelog bug
+* Fix: changelog-uitvoer verplaatst naar de admin Changelog-tab en verwijderd uit de front-end weergave.
 
 = 3.0.0 =
 * Opgeknipt: admin-pagina’s modulair via separate `includes/admin/*.php`.  
@@ -55,7 +60,7 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
 * `gre_fetch_google_place_data()` aangepast naar batch-transient (`gre_all_places_data`), waardoor paginalaag geen live API-calls meer uitvoert.
 
 = 2.0.2 =
-* Controleer individuele bedrijven via een "Check"-knop met statusicoon. Resultaat wordt onthouden tot de Place ID wijzigt.
+* Controleer individuele bedrijven via een "Check"-knop met status-icoon. Resultaat wordt onthouden tot de Place ID wijzigt.
 
 = 2.0.1 =
 * Bedrijfsnaam zichtbaar bij Elementor Dynamic Tag "Google Rating".
@@ -101,6 +106,9 @@ Gebruik de **Cache duur** dropdown in de instellingen (1 uur, 12 uur, 24 uur of 
 = Hoe ververs ik de data handmatig? =
 Klik op de **Ververs data** knop onderaan de Instellingen tab.
 
+= Hoe meet ik API-call gebruik? =
+Bekijk onderaan de Instellingen-pagina het aantal cron- en handmatige ververs-data API-calls. Reset de teller met de “Reset API-call teller” knop.
+
 == Support ==
 Rapporteer bugs of feature requests via GitHub Issues:  
-https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/issues
+https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/issues  

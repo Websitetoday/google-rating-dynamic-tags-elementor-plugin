@@ -4,7 +4,7 @@
  * Plugin URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) als Elementor Dynamic Tag en via shortcode (meetbaar en stylebaar).
- * Version:         3.0.1
+ * Version:         3.0.2
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
  * Text Domain:     gre
@@ -50,6 +50,66 @@ add_filter( 'plugins_api', function( $res, $action, $args ) {
     }
     return $res;
 }, 10, 3 );
+
+// ──────────────────────────────────────────────────────────
+//  Schedule background fetch via WP-Cron
+// ──────────────────────────────────────────────────────────
+
+register_activation_hook( __FILE__, 'gre_activation' );
+function gre_activation() {
+    if ( ! wp_next_scheduled( 'gre_prefetch_event' ) ) {
+        wp_schedule_single_event( time(), 'gre_prefetch_event' );
+    }
+}
+
+register_deactivation_hook( __FILE__, 'gre_deactivation' );
+function gre_deactivation() {
+    wp_clear_scheduled_hook( 'gre_prefetch_event' );
+}
+
+add_action( 'gre_prefetch_event', 'gre_do_google_place_fetch' );
+function gre_do_google_place_fetch() {
+    $api_key  = get_option( GRE_OPT_API_KEY );
+    $place_id = get_option( GRE_OPT_PLACE_ID );
+    if ( empty( $api_key ) || empty( $place_id ) ) {
+        return false;
+    }
+
+    $response = wp_remote_get( sprintf(
+        'https://maps.googleapis.com/maps/api/place/details/json'
+        . '?place_id=%s'
+        . '&fields=name,rating,user_ratings_total,opening_hours'
+        . '&language=nl'
+        . '&key=%s',
+        urlencode( $place_id ),
+        $api_key
+    ), array( 'timeout' => 10 ) );
+
+    if ( is_wp_error( $response ) ) {
+        return false;
+    }
+
+    $json = json_decode( wp_remote_retrieve_body( $response ), true );
+    if ( empty( $json['result'] ) ) {
+        return false;
+    }
+
+    // sla op in last_data en transient
+    update_option( GRE_OPT_LAST_DATA, $json['result'] );
+    $hours = absint( get_option( 'gre_cache_ttl', 12 ) );
+    $ttl   = apply_filters( 'gre_transient_ttl', $hours * HOUR_IN_SECONDS );
+    set_transient( 'gre_place_' . md5( $place_id ), $json['result'], $ttl );
+
+    // plan de volgende fetch exact na TTL
+    wp_schedule_single_event( time() + $ttl, 'gre_prefetch_event' );
+
+	// **incrementeer teller**
+    $count = (int) get_option( 'gre_api_call_count', 0 );
+    update_option( 'gre_api_call_count', $count + 1 );
+	
+    return true;
+}
+
 
 // ──────────────────────────────────────────────────────────
 //  Optie-namen
@@ -143,8 +203,6 @@ function gre_api_key_render() {
         esc_attr( GRE_OPT_API_KEY ),
         esc_attr( $val )
     );
-
-    // Uitleg over aanmaken API-key
     echo '<p class="description">';
     echo '<span class="dashicons dashicons-editor-help" style="vertical-align:middle; margin-right:4px;" '
        . 'title="' . esc_attr__( 'Vraag een API Key aan via Google Cloud Console → APIs & Services → Credentials', 'gre' ) . '"></span>';
@@ -153,8 +211,6 @@ function gre_api_key_render() {
        . '</a> ';
     echo esc_html__( 'om je API Key aan te maken.', 'gre' );
     echo '</p>';
-
-    // Uitleg welke API ingeschakeld moet zijn
     echo '<p class="description">';
     echo '<span class="dashicons dashicons-editor-help" style="vertical-align:middle; margin-right:4px;" '
        . 'title="' . esc_attr__( 'Activeer de benodigde API via de Library', 'gre' ) . '"></span>';
@@ -168,7 +224,6 @@ function gre_api_key_render() {
 
 function gre_place_id_render() {
     $val = get_option( GRE_OPT_PLACE_ID, '' );
-    // het invoerveld + toggle + status-icoon
     printf(
         '<input type="password" id="%1$s" name="%1$s" value="%2$s" class="regular-text" />'
       . ' <span class="toggle-visibility dashicons dashicons-visibility" data-field="%1$s" style="cursor:pointer; margin-left:4px;"></span>'
@@ -176,8 +231,6 @@ function gre_place_id_render() {
         esc_attr( GRE_OPT_PLACE_ID ),
         esc_attr( $val )
     );
-
-    // uitleg met link naar Google Place ID Finder
     echo '<p class="description">';
     echo '<span class="dashicons dashicons-editor-help" style="vertical-align:middle; margin-right:4px;" '
        . 'title="' . esc_attr__( 'Vind je Place ID via de Google Place ID Finder', 'gre' ) . '"></span>';
@@ -186,8 +239,6 @@ function gre_place_id_render() {
        . '</a> ';
     echo esc_html__( 'om je Place ID te vinden.', 'gre' );
     echo '</p>';
-
-    // toon eventueel eerder verbonden bedrijfsnaam
     $last = get_option( GRE_OPT_LAST_DATA, false );
     if ( is_array( $last ) && ! empty( $last['name'] ) ) {
         printf(
@@ -225,7 +276,7 @@ function gre_cache_ttl_render() {
         <option value="24"  <?php selected( $val, 24 );  ?>>24 uur</option>
         <option value="168" <?php selected( $val, 168 ); ?>>1 week</option>
     </select>
-    <p class="description"><?php esc_html_e( 'Hoe lang de Google-data gecached blijft (in uren).', 'gre' ); ?></p>
+    <p class="description"><?php esc_html_e( 'Hoe lang de Google-data gecached blijft (in uren). Kies voor 1 week voor aan laag aantal API calls.', 'gre' ); ?></p>
     <?php
 }
 
@@ -283,48 +334,26 @@ function gre_options_page() {
 }
 
 // ──────────────────────────────────────────────────────────
-//  2) Data ophalen met caching en fallback
+//  2) Data ophalen met caching en fallback (cron-only)
 // ──────────────────────────────────────────────────────────
 
 function gre_fetch_google_place_data() {
-    $api_key  = get_option( GRE_OPT_API_KEY );
     $place_id = get_option( GRE_OPT_PLACE_ID );
-    if ( empty( $api_key ) || empty( $place_id ) ) {
+    if ( empty( $place_id ) ) {
         return false;
     }
 
     $transient_key = 'gre_place_' . md5( $place_id );
+    $data          = get_transient( $transient_key );
     $last_data     = get_option( GRE_OPT_LAST_DATA );
 
-    if ( false !== ( $data = get_transient( $transient_key ) ) ) {
+    if ( false !== $data ) {
         return $data;
     }
 
-    // Nu inclusief 'name' veld
-    $response = wp_remote_get(
-        sprintf(
-            'https://maps.googleapis.com/maps/api/place/details/json'
-            . '?place_id=%s'
-            . '&fields=name,rating,user_ratings_total,opening_hours'
-            . '&language=nl'
-            . '&key=%s',
-            urlencode( $place_id ),
-            $api_key
-        ),
-        array( 'timeout' => 10 )
-    );
-
-    if ( is_wp_error( $response ) ) {
-        return $last_data ?: false;
-    }
-
-    $json = json_decode( wp_remote_retrieve_body( $response ), true );
-    if ( ! empty( $json['result'] ) ) {
-        update_option( GRE_OPT_LAST_DATA, $json['result'] );
-        $hours = absint( get_option( 'gre_cache_ttl', 12 ) );
-        $ttl   = apply_filters( 'gre_transient_ttl', $hours * HOUR_IN_SECONDS );
-        set_transient( $transient_key, $json['result'], $ttl );
-        return $json['result'];
+    // Cache verlopen: plan een éénmalige achtergronddownload
+    if ( ! wp_next_scheduled( 'gre_prefetch_event' ) ) {
+        wp_schedule_single_event( time() + 5, 'gre_prefetch_event' );
     }
 
     return $last_data ?: false;
@@ -334,7 +363,6 @@ function gre_fetch_google_place_data() {
 //  3) AJAX-handlers
 // ──────────────────────────────────────────────────────────
 
-// Test verbinding
 add_action( 'wp_ajax_gre_test_connection', 'gre_test_connection_callback' );
 function gre_test_connection_callback() {
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -346,7 +374,6 @@ function gre_test_connection_callback() {
         wp_send_json_error( __( 'Vul API Key en Place ID in.', 'gre' ) );
     }
 
-    // Nu inclusief 'name' veld
     $url = sprintf(
         'https://maps.googleapis.com/maps/api/place/details/json'
         . '?place_id=%s'
@@ -375,7 +402,6 @@ function gre_test_connection_callback() {
         ) );
     }
 
-    // Bewaar result inclusief naam
     update_option( GRE_OPT_LAST_DATA, $json['result'] );
 
     wp_send_json_success( sprintf(
@@ -384,7 +410,6 @@ function gre_test_connection_callback() {
     ) );
 }
 
-// Force refresh data
 add_action( 'wp_ajax_gre_force_refresh', 'gre_force_refresh_callback' );
 function gre_force_refresh_callback() {
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -392,17 +417,15 @@ function gre_force_refresh_callback() {
     }
     check_ajax_referer( 'gre_force_refresh', 'security' );
 
-    $place_id      = get_option( GRE_OPT_PLACE_ID );
-    $transient_key = 'gre_place_' . md5( $place_id );
-    delete_transient( $transient_key );
-    delete_option( GRE_OPT_LAST_DATA );
-
-    $data = gre_fetch_google_place_data();
-    if ( ! $data ) {
+    // Forceer directe fetch
+    $fetched = gre_do_google_place_fetch();
+    if ( ! $fetched ) {
         wp_send_json_error( __( 'Vernieuwen mislukt.', 'gre' ) );
     }
+
     wp_send_json_success( __( 'Data ververst!', 'gre' ) );
 }
+
 
 // ──────────────────────────────────────────────────────────
 //  4) Admin-scripts enqueue & inline CSS

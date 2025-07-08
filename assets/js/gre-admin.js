@@ -51,7 +51,7 @@ jQuery(document).ready(function($){
         var placeId = $('#' + greSettings.placeIdField).val().trim();
         var $result = $('#gre-test-connection-result');
 
-        // direct feedback bij lege velden
+        // Direct feedback bij lege velden
         if (! apiKey || ! placeId) {
             $result
                 .text('Vul API Key en Place ID in.')
@@ -62,7 +62,7 @@ jQuery(document).ready(function($){
             return;
         }
 
-        // knop tijdelijk disablen en “laden” indicatie
+        // Knop disablen en “laden” indicatie
         $(this).prop('disabled', true);
         $result.text('Even geduld…').css('color', '');
 
@@ -73,22 +73,49 @@ jQuery(document).ready(function($){
                 action:   'gre_test_connection',
                 api_key:  apiKey,
                 place_id: placeId
-            },
-            function(response) {
-                var ok = response.success === true;
-                $result
-                    .text(response.data)
-                    .css('color', ok ? '#28a745' : '#dc3545');
-                updateStatusIcon($('#gre-api-status'), ok);
-                updateStatusIcon($('#gre-place-status'), ok);
-                if (ok) {
-                    localStorage.setItem('gre_connection_ok', '1');
-                } else {
-                    localStorage.removeItem('gre_connection_ok');
-                }
             }
-        ).always(function(){
+        ).done(function(response) {
+            var ok = response.success === true;
+            $result
+                .text(response.data)
+                .css('color', ok ? '#28a745' : '#dc3545');
+            updateStatusIcon($('#gre-api-status'), ok);
+            updateStatusIcon($('#gre-place-status'), ok);
+            if (ok) {
+                localStorage.setItem('gre_connection_ok', '1');
+            } else {
+                localStorage.removeItem('gre_connection_ok');
+            }
+        }).always(function(){
             $('#gre-test-connection-button').prop('disabled', false);
+        });
+    });
+
+    // Handler voor “Ververs data” knop
+    $('#gre-refresh-data-button').on('click', function(){
+        var $btn    = $(this);
+        var $result = $('#gre-refresh-data-result');
+
+        // Knop disablen en “laden” indicatie
+        $btn.prop('disabled', true);
+        $result.text('Even geduld…').css('color', '');
+
+        $.post(
+            greSettings.ajaxUrl,
+            {
+                action:   'gre_force_refresh',
+                security: greSettings.refreshNonce
+            }
+        ).done(function(response){
+            var ok  = response.success === true;
+            var msg = response.data;
+            $result
+                .text(msg)
+                .css('color', ok ? '#28a745' : '#dc3545');
+        }).fail(function(){
+            $result.text('AJAX-fout').css('color', '#dc3545');
+        }).always(function(){
+            $btn.prop('disabled', false);
         });
     });
 
@@ -96,6 +123,7 @@ jQuery(document).ready(function($){
     var $fields = $('#' + greSettings.apiKeyField + ', #' + greSettings.placeIdField);
     $fields.on('blur', checkConnectionIcons);
     $fields.on('input paste', function() {
+        // Zodra er getypt wordt: clear vorige status
         localStorage.removeItem('gre_connection_ok');
         updateStatusIcon($('#gre-api-status'), false);
         updateStatusIcon($('#gre-place-status'), false);
@@ -113,35 +141,4 @@ jQuery(document).ready(function($){
             .text('Verbonden! ✔️')
             .css('color', '#28a745');
     }
-
-    // Handler voor “Ververs data” knop
-    $('#gre-refresh-data-button').on('click', function(){
-        var $btn    = $(this),
-            $result = $('#gre-refresh-data-result');
-
-        $btn.prop('disabled', true);
-        $result.text('').css('color', '');
-
-        $.post(
-            greSettings.ajaxUrl,
-            {
-                action:   'gre_force_refresh',
-                security: greSettings.refreshNonce
-            }
-        )
-        .done(function(response){
-            var ok  = response.success === true;
-            var msg = response.data;
-            $result
-                .text(msg)
-                .css('color', ok ? '#28a745' : '#dc3545');
-        })
-        .fail(function(){
-            $result.text('AJAX-fout').css('color', '#dc3545');
-        })
-        .always(function(){
-            $btn.prop('disabled', false);
-        });
-    });
-
 });
