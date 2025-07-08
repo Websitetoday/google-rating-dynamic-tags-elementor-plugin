@@ -1,21 +1,21 @@
 === Google Rating Dynamic Tags Elementor ===
-Contributors: Websitetoday.nl
-Tags: elementor, google, rating, dynamic-tags, cache, place-id
-Requires at least: 5.0
-Tested up to: 6.4
-Stable tag: main
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Contributors: Websitetoday.nl  
+Tags: elementor, google, rating, dynamic-tags, cache, place-id  
+Requires at least: 5.0  
+Tested up to: 6.4  
+Stable tag: main  
+License: GPLv2 or later  
+License URI: https://www.gnu.org/licenses/gpl-2.0.html  
 
 == Description ==
 Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) rechtstreeks in je content:
 
-* **Elementor Dynamic Tag**: gebruik de Google Rating als tekst, nummer, ster of gecombineerde weergave.
-* **Shortcode**: voeg de rating of het aantal reviews toe via `[google_rating field="rating_star"]`.
-* **Cache & Force Refresh**: stel in hoe lang data gecached blijft (1 uur, 12 uur, 24 uur of 1 week) en ververs de data handmatig via de “Ververs data” knop.
-* **API-call teller**: bekijk in de Instellingen-pagina hoeveel cron- en handmatige ververs-API-calls zijn gedaan en reset ze met één klik.
-* **Uninstall Cleanup**: bij deïnstallatie verwijdert de plugin alle instellingen en transients, zodat je opnieuw met een schone lei kunt beginnen.
-* **Automatische updates** via GitHub Releases (PUC v5).
+* **Elementor Dynamic Tag**: gebruik de Google Rating als tekst, nummer, ster of gecombineerde weergave.  
+* **Shortcode**: voeg de rating of het aantal reviews toe via `[google_rating field="rating_star"]`.  
+* **Cache & Force Refresh**: stel in hoe lang data gecached blijft (1 uur, 12 uur, 24 uur of 1 week) en ververs de data handmatig via de “Ververs data” knop.  
+* **API-call teller**: bekijk in de Instellingen-pagina hoeveel cron- en handmatige ververs-API-calls zijn gedaan en reset ze met één klik.  
+* **Uninstall Cleanup**: bij deïnstallatie verwijdert de plugin alle instellingen en transients, zodat je opnieuw met een schone lei kunt beginnen.  
+* **Automatische updates** via GitHub Releases (PUC v5).  
 
 == Installation ==
 1. Upload de map `google-rating-dynamic-tags-elementor-plugin` naar de `/wp-content/plugins/` directory.  
@@ -24,7 +24,7 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
 4. Ga naar **Google Rating → Instellingen** en vul je Google Places **API Key** en **Place ID** in.  
 5. Stel onder **Cache duur** de gewenste TTL in (1 uur, 12 uur, 24 uur of 1 week).  
 6. Klik op **Ververs data** om direct de nieuwste gegevens uit Google op te halen.  
-7. Bekijk onderaan de Instellingen-pagina het aantal API-calls en reset de teller indien gewenst.
+7. Bekijk onderaan de Instellingen-pagina het aantal API-calls en reset de teller indien gewenst.  
 
 == Screenshots ==
 1. **Banner in modal**  
@@ -37,6 +37,12 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
    ![Ververs data](screenshot-4.png)  
 
 == Changelog ==
+= 3.0.3 =
+* Instellingen onderverdeeld in aparte `register_setting` groepen om wissen van gegevens te voorkomen.
+* “Instellingen opslaan” knoppen toegevoegd in beide formulieren.
+* Changelog-tab toont nu automatisch `CHANGELOG.md` uit de pluginmap, zonder externe parser.
+* Kleine verbeteringen aan HTML-structuur, styling en veiligheid van admin interface.
+
 = 3.0.2 =
 * Feature: API-call teller toegevoegd in Instellingen tab met reset-knop; teller nu onderaan geplaatst; meet alleen cron- en handmatige ververs-data API-calls; vermindering van live API calls door cron-only fetch-model (calls beperkt tot het gekozen cache-interval).
 
@@ -88,6 +94,9 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
 * Ondersteuning GitHub Releases via Update URI.
 
 == Upgrade Notice ==
+= 3.0.3 =
+Changelog-tab laadt nu direct uit `CHANGELOG.md`. Instellingen zijn opgesplitst om veilig opslaan te garanderen.
+
 = 3.0.0 =
 De admin-pagina’s zijn nu modulair opgebroken en er is een volledige uninstall-cleanup toegevoegd. Bij het upgraden worden oude transients verwijderd en moet je eenmalig je Place ID en cache-instellingen opnieuw controleren.
 

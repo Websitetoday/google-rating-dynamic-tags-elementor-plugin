@@ -4,7 +4,7 @@
  * Plugin URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) als Elementor Dynamic Tag en via shortcode (meetbaar en stylebaar).
- * Version:         3.0.2
+ * Version:         3.0.3
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
  * Text Domain:     gre
@@ -172,10 +172,23 @@ function gre_add_admin_menu() {
 }
 
 function gre_settings_init() {
-    register_setting( 'gre_settings', GRE_OPT_API_KEY,        array( 'sanitize_callback' => 'sanitize_text_field' ) );
-    register_setting( 'gre_settings', GRE_OPT_PLACE_ID,       array( 'sanitize_callback' => 'sanitize_text_field' ) );
-    register_setting( 'gre_settings', 'gre_enable_shortcode', array( 'sanitize_callback' => 'absint',       'default' => 1 ) );
-    register_setting( 'gre_settings', 'gre_cache_ttl',        array( 'sanitize_callback' => 'absint',       'default' => 12 ) );
+    // 🔹 API instellingen groep
+register_setting( 'gre_api_settings', GRE_OPT_API_KEY, array(
+    'sanitize_callback' => 'sanitize_text_field',
+) );
+register_setting( 'gre_api_settings', GRE_OPT_PLACE_ID, array(
+    'sanitize_callback' => 'sanitize_text_field',
+) );
+
+// 🔹 Plugin instellingen groep
+register_setting( 'gre_plugin_settings', 'gre_enable_shortcode', array(
+    'sanitize_callback' => 'absint',
+    'default' => 1,
+) );
+register_setting( 'gre_plugin_settings', 'gre_cache_ttl', array(
+    'sanitize_callback' => 'absint',
+    'default' => 12,
+) );
 
     add_settings_section(
         'gre_section',

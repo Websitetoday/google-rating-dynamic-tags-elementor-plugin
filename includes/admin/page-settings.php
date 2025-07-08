@@ -5,66 +5,65 @@
 function gre_render_settings_page() {
     echo '<div class="wrap gre-admin-wrap">';
 
-    //
-    // 📦 API & Place ID kaart
-    //
-    echo '<div class="gre-card">';
-        echo '<h3>' . esc_html__( 'API & Place ID', 'gre' ) . '</h3>';
-        echo '<form action="options.php" method="post">';
-            // security + option group
-            settings_fields( 'gre_settings' );
+   // API & Place ID kaart
+echo '<div class="gre-card">';
+    echo '<h3>' . esc_html__( 'API & Place ID', 'gre' ) . '</h3>';
+    echo '<form action="options.php" method="post">';
+settings_fields( 'gre_api_settings' );
 
-            // API Key veld
-            echo '<div class="gre-setting">';
-                echo '<label for="' . esc_attr( GRE_OPT_API_KEY ) . '">' 
-                     . esc_html__( 'API Key', 'gre' ) 
-                     . '</label>';
-                gre_api_key_render();
-            echo '</div>';
+        echo '<div class="gre-setting">';
+            echo '<label for="' . esc_attr( GRE_OPT_API_KEY ) . '">' 
+                 . esc_html__( 'API Key', 'gre' ) 
+                 . '</label>';
+            gre_api_key_render();
+        echo '</div>';
 
-            // Place ID veld
-            echo '<div class="gre-setting">';
-                echo '<label for="' . esc_attr( GRE_OPT_PLACE_ID ) . '">' 
-                     . esc_html__( 'Place ID', 'gre' ) 
-                     . '</label>';
-                gre_place_id_render();
-            echo '</div>';
+        echo '<div class="gre-setting">';
+            echo '<label for="' . esc_attr( GRE_OPT_PLACE_ID ) . '">' 
+                 . esc_html__( 'Place ID', 'gre' ) 
+                 . '</label>';
+            gre_place_id_render();
+        echo '</div>';
 
-            // Verbinding testen knop
-            echo '<div class="gre-setting">';
-                // lege label voor uitlijning
-                echo '<label>&nbsp;</label>';
-                gre_test_connection_render();
-            echo '</div>';
-        echo '</form>';
-    echo '</div>';
+        echo '<div class="gre-setting">';
+            echo '<label>&nbsp;</label>';
+            gre_test_connection_render();
+        echo '</div>';
+
+        // ✅ Toevoegen submit knop
+        submit_button( __( 'Instellingen opslaan', 'gre' ) );
+
+    echo '</form>';
+echo '</div>';
 
 
-    //
-    // ⚙️ Cache & Shortcode kaart
-    //
-    echo '<div class="gre-card">';
-        echo '<h3>' . esc_html__( 'Cache & Shortcode', 'gre' ) . '</h3>';
-        echo '<form action="options.php" method="post">';
-            settings_fields( 'gre_settings' );
 
-            // Cache-duur dropdown
-            echo '<div class="gre-setting">';
-                echo '<label for="gre_cache_ttl">' 
-                     . esc_html__( 'Cache duur', 'gre' ) 
-                     . '</label>';
-                gre_cache_ttl_render();
-            echo '</div>';
+   // Cache & Shortcode kaart
+echo '<div class="gre-card">';
+    echo '<h3>' . esc_html__( 'Cache & Shortcode', 'gre' ) . '</h3>';
+    echo '<form action="options.php" method="post">';
+settings_fields( 'gre_plugin_settings' );
 
-            // Shortcode inschakelen checkbox
-            echo '<div class="gre-setting">';
-                echo '<label for="gre_enable_shortcode">' 
-                     . esc_html__( 'Shortcode inschakelen', 'gre' ) 
-                     . '</label>';
-                gre_enable_shortcode_render();
-            echo '</div>';
-        echo '</form>';
-    echo '</div>';
+        echo '<div class="gre-setting">';
+            echo '<label for="gre_cache_ttl">' 
+                 . esc_html__( 'Cache duur', 'gre' ) 
+                 . '</label>';
+            gre_cache_ttl_render();
+        echo '</div>';
+
+        echo '<div class="gre-setting">';
+            echo '<label for="gre_enable_shortcode">' 
+                 . esc_html__( 'Shortcode inschakelen', 'gre' ) 
+                 . '</label>';
+            gre_enable_shortcode_render();
+        echo '</div>';
+
+        // ✅ Toevoegen submit knop
+        submit_button( __( 'Instellingen opslaan', 'gre' ) );
+
+    echo '</form>';
+echo '</div>';
+
 
 
     //

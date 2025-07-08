@@ -2,6 +2,16 @@
 
 Alle belangrijke wijzigingen in de plugin worden hieronder gedocumenteerd.
 
+## [3.0.3] - 2025-07-08
+
+### 🛠 Improvements
+* Instellingen gescheiden in aparte `register_setting` groepen (`gre_api_settings` en `gre_plugin_settings`) om het overschrijven van API-gegevens te voorkomen.
+* “Instellingen opslaan” knoppen toegevoegd in beide formulieren.
+* `CHANGELOG.md` wordt nu automatisch weergegeven in de admin via `page-changelog.php`, zonder afhankelijkheid van een Markdown-parser.
+* CSS en HTML verbeteringen voor compatibiliteit met Elementor admin layout.
+
+---
+
 ## [3.0.2] - 2025-07-08
 
 ### ✨ New
@@ -109,4 +119,4 @@ Alle belangrijke wijzigingen in de plugin worden hieronder gedocumenteerd.
 
 ---
 
-Voor oudere versies, zie de GitHub releases.  
+Voor oudere versies, zie de GitHub releases.
