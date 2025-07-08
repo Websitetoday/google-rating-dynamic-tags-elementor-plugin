@@ -428,13 +428,23 @@ function gre_force_refresh_callback() {
 
 
 // ──────────────────────────────────────────────────────────
-//  4) Admin-scripts enqueue & inline CSS
+//  4) Admin-scripts & styles enqueue & inline CSS
 // ──────────────────────────────────────────────────────────
 
 add_action( 'admin_enqueue_scripts', function( $hook ) {
     if ( 'toplevel_page_gre_options' !== $hook ) {
         return;
     }
+
+    // Moderne admin styling
+    wp_enqueue_style(
+        'gre-admin-style',
+        plugin_dir_url( __FILE__ ) . 'assets/css/admin-style.css',
+        array(),
+        filemtime( plugin_dir_path( __FILE__ ) . 'assets/css/admin-style.css' )
+    );
+
+    // Plugin JavaScript
     wp_enqueue_script(
         'gre-admin-js',
         plugin_dir_url( __FILE__ ) . 'assets/js/gre-admin.js',
@@ -457,6 +467,7 @@ add_action( 'admin_head', function() {
         .gre-status-icon.red   { color: #dc3545; }
     </style>';
 } );
+
 
 // ──────────────────────────────────────────────────────────
 //  5) Elementor Dynamic Tags registreren (alleen Pro)

@@ -1,0 +1,150 @@
+/* admin-style.css */
+
+/* Algemene wrapper */
+.gre-admin-wrap {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 0 20px 40px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #333;
+}
+
+/* Kaart-layout voor elke sectie */
+.gre-card {
+  background: #ffffff;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+/* Titel van kaarten */
+.gre-card h3 {
+  margin: 0 0 16px;
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #222;
+  border-bottom: 2px solid #e1e4e8;
+  padding-bottom: 8px;
+}
+
+/* Opmaak van individuele instelling-regels */
+.gre-setting {
+  display: flex;
+  flex-wrap: wrap;        /* maakt wrapping mogelijk */
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+/* Label naast elk veld */
+.gre-setting label {
+  flex: 0 0 180px;
+  margin-top: 6px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Velden (input, select) */
+.gre-setting input[type="text"],
+.gre-setting input[type="password"],
+.gre-setting select {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #ccd0d4;
+  border-radius: 4px;
+  font-size: 1em;
+  transition: border-color 0.2s ease;
+}
+.gre-setting input[type="text"]:focus,
+.gre-setting input[type="password"]:focus,
+.gre-setting select:focus {
+  border-color: #007cba;
+  outline: none;
+}
+
+/* Beschrijving onder het invoerveld */
+.gre-setting p.description {
+  flex: 1 0 100%;             /* volle breedte binnen flex-wrap */
+  margin: 8px 0 0 180px;      /* indent gelijk aan label-breedte */
+  color: #666;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+/* Knoppen naast velden */
+.gre-setting .button,
+.gre-card .button {
+  margin-top: 2px;
+}
+
+/* Status-icoon */
+.gre-status-icon {
+  margin-left: 8px;
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+/* Badge-stijl voor changelog */
+.gre-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 0.75em;
+  font-weight: 600;
+  border-radius: 4px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-right: 8px;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.gre-badge--new         { background: #28a745; color: #fff; }
+.gre-badge--improvement { background: #17a2b8; color: #fff; }
+.gre-badge--fix         { background: #ffc107; color: #333; }
+.gre-badge--bug         { background: #dc3545; color: #fff; }
+
+/* Changelog lijst */
+.gre-admin-wrap ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.gre-admin-wrap ul li {
+  margin-bottom: 14px;
+  line-height: 1.5;
+  font-size: 0.95em;
+}
+
+/* Horizontal rules */
+.gre-admin-wrap hr {
+  border: none;
+  border-bottom: 1px solid #e1e4e8;
+  margin: 32px 0;
+}
+
+/* Footer-branding */
+.gre-admin-wrap .gre-card:last-of-type {
+  text-align: center;
+}
+.gre-admin-wrap .gre-card:last-of-type img {
+  height: 40px;
+  margin-bottom: 8px;
+}
+.gre-admin-wrap .gre-card:last-of-type a {
+  display: inline-block;
+  color: #007cba;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.gre-admin-wrap .gre-card:last-of-type a:hover {
+  color: #005177;
+}
+
+/* Centered action buttons */
+#gre-refresh-data-button,
+#gre_reset_calls_button {
+  display: block;
+  margin: 20px auto;
+}
+
