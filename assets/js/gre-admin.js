@@ -14,6 +14,16 @@ jQuery(document).ready(function($){
             .addClass(ok ? 'dashicons-yes green' : 'dashicons-no-alt red');
     }
 
+    // Bedrijfsnaam tonen
+    function updateCompanyName(name) {
+        $('#gre-place-company').remove(); // Remove old
+        if (name) {
+            $('#' + greSettings.placeIdField)
+                .closest('.gre-setting')
+                .append('<span id="gre-place-company" style="display:block;margin-top:8px;color:#28a745;font-weight:500;">Verbonden met: ' + $('<div>').text(name).html() + '</span>');
+        }
+    }
+
     // AJAX-check uitvoeren (voor real-time velden)
     function checkConnectionIcons() {
         var apiKey  = $('#' + greSettings.apiKeyField).val().trim();
@@ -22,6 +32,7 @@ jQuery(document).ready(function($){
         if (! apiKey || ! placeId) {
             updateStatusIcon($('#gre-api-status'), false);
             updateStatusIcon($('#gre-place-status'), false);
+            updateCompanyName('');
             return;
         }
 
@@ -38,8 +49,10 @@ jQuery(document).ready(function($){
                 updateStatusIcon($('#gre-place-status'), ok);
                 if (ok) {
                     localStorage.setItem('gre_connection_ok', '1');
+                    updateCompanyName(response.data && response.data.company ? response.data.company : '');
                 } else {
                     localStorage.removeItem('gre_connection_ok');
+                    updateCompanyName('');
                 }
             }
         );
@@ -59,12 +72,14 @@ jQuery(document).ready(function($){
             updateStatusIcon($('#gre-api-status'), false);
             updateStatusIcon($('#gre-place-status'), false);
             localStorage.removeItem('gre_connection_ok');
+            updateCompanyName('');
             return;
         }
 
         // Knop disablen en “laden” indicatie
         $(this).prop('disabled', true);
         $result.text('Even geduld…').css('color', '');
+        updateCompanyName('');
 
         // AJAX-call
         $.post(
@@ -77,15 +92,20 @@ jQuery(document).ready(function($){
         ).done(function(response) {
             var ok = response.success === true;
             $result
-                .text(response.data)
+                .text(typeof response.data === 'string' ? response.data : (ok ? 'Verbonden! ✔️' : 'Verbinding mislukt'))
                 .css('color', ok ? '#28a745' : '#dc3545');
             updateStatusIcon($('#gre-api-status'), ok);
             updateStatusIcon($('#gre-place-status'), ok);
-            if (ok) {
+            if (ok && response.data && response.data.company) {
                 localStorage.setItem('gre_connection_ok', '1');
+                updateCompanyName(response.data.company);
             } else {
                 localStorage.removeItem('gre_connection_ok');
+                updateCompanyName('');
             }
+        }).fail(function(){
+            $result.text('AJAX-fout').css('color', '#dc3545');
+            updateCompanyName('');
         }).always(function(){
             $('#gre-test-connection-button').prop('disabled', false);
         });
@@ -109,6 +129,9 @@ jQuery(document).ready(function($){
         ).done(function(response){
             var ok  = response.success === true;
             var msg = response.data;
+            if (ok) {
+                msg += ' (Let op: standaard wordt de data maximaal 1x per week automatisch opgehaald.)';
+            }
             $result
                 .text(msg)
                 .css('color', ok ? '#28a745' : '#dc3545');
@@ -127,6 +150,7 @@ jQuery(document).ready(function($){
         localStorage.removeItem('gre_connection_ok');
         updateStatusIcon($('#gre-api-status'), false);
         updateStatusIcon($('#gre-place-status'), false);
+        updateCompanyName('');
 
         clearTimeout($.data(this, 'timer'));
         var wait = setTimeout(checkConnectionIcons, 800);
