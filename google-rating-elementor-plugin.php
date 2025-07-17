@@ -4,7 +4,7 @@
  * Plugin URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) als Elementor Dynamic Tag en via shortcode. Volledig meetbaar en stijlbaar.
- * Version:         3.1.0
+ * Version:         3.1.1
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
  * Text Domain:     gre
@@ -15,44 +15,41 @@
  * Requires PHP:    7.4
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
-
-// --------------------------
-// Plaats je 'use'-statements BOVEN de rest van de code!
-use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-
-// --------------------------
-//  Plugin Update Checker v5.5 Integration (YahnisElsts PUC)
-// --------------------------
-if ( file_exists( __DIR__ . '/plugin-update-checker/plugin-update-checker.php' ) ) {
-    require_once __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
-    if ( ! class_exists( 'Parsedown' ) && file_exists( __DIR__ . '/plugin-update-checker/Puc/v5p5/Parsedown.php' ) ) {
-        require_once __DIR__ . '/plugin-update-checker/Puc/v5p5/Parsedown.php';
-    }
-
-    $updateChecker = PucFactory::buildUpdateChecker(
-        'https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/',
-        __FILE__,
-        'google-rating-dynamic-tags-elementor-plugin'
-    );
-    $updateChecker->setBranch( 'main' );
-
-    add_filter( 'plugins_api', function( $res, $action, $args ) {
-        if (
-            'plugin_information' === $action
-            && is_object( $res )
-            && ! empty( $args->slug )
-            && 'google-rating-dynamic-tags-elementor-plugin' === $args->slug
-        ) {
-            $res->icons = [
-                '1x' => plugin_dir_url( __FILE__ ) . 'icon-128x128.png',
-                '2x' => plugin_dir_url( __FILE__ ) . 'icon-256x256.png',
-            ];
-        }
-        return $res;
-    }, 10, 3 );
+if ( ! defined( 'ABSPATH' ) ) {
+    exit; // Exit if accessed directly
 }
 
+// ──────────────────────────────────────────────────────────
+//  Plugin Update Checker v5.5 Integration (YahnisElsts PUC)
+// ──────────────────────────────────────────────────────────
+
+require_once __DIR__ . '/plugin-update-checker/plugin-update-checker.php';
+if ( ! class_exists( 'Parsedown' ) ) {
+    require_once __DIR__ . '/plugin-update-checker/Puc/v5p5/Parsedown.php';
+}
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$updateChecker = PucFactory::buildUpdateChecker(
+    'https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/',
+    __FILE__,
+    'google-rating-dynamic-tags-elementor-plugin'
+);
+$updateChecker->setBranch( 'main' );
+
+add_filter( 'plugins_api', function( $res, $action, $args ) {
+    if ( 'plugin_information' === $action
+      && is_object( $res )
+      && ! empty( $args->slug )
+      && 'google-rating-dynamic-tags-elementor-plugin' === $args->slug
+    ) {
+        $res->icons = [
+            '1x' => plugin_dir_url( __FILE__ ) . 'icon-128x128.png',
+            '2x' => plugin_dir_url( __FILE__ ) . 'icon-256x256.png',
+        ];
+    }
+    return $res;
+}, 10, 3 );
 
 // ──────────────
 //  Constants
