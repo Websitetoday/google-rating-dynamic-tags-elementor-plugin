@@ -9,19 +9,24 @@ function gre_render_settings_page() {
             settings_fields( 'gre_api_settings' );
 
             // API Key
-            echo '<div class="gre-setting">';
-                echo '<label for="' . esc_attr( GRE_OPT_API_KEY ) . '">';
-                    echo esc_html__( 'API Key', 'gre' );
-                    echo ' <span class="gre-question-icon">?</span>';
-                echo '</label>';
-                gre_api_key_render();
-                echo '<p class="gre-field-help">'
-                    . esc_html__('Je API Key maak je aan in het Google Cloud Platform onder APIs & Services > Credentials. ', 'gre')
-                    . '<a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" class="gre-help-link">'
-                    . esc_html__('Bekijk de instructies', 'gre')
-                    . '</a>'
-                    . '</p>';
-            echo '</div>';
+echo '<div class="gre-setting">';
+    echo '<label for="' . esc_attr( GRE_OPT_API_KEY ) . '">';
+        echo esc_html__( 'API Key', 'gre' );
+        echo ' <span class="gre-question-icon">?</span>';
+    echo '</label>';
+    gre_api_key_render();
+    echo '<p class="gre-field-help">'
+        . esc_html__('Je API Key maak je aan in het Google Cloud Platform onder APIs & Services > Credentials. ', 'gre')
+        . esc_html__('Let op: zorg ervoor dat je ook de "Places API" activeert in het API-beheer van je project. Zonder deze actieve API werkt de plugin niet correct.', 'gre')
+        . '<br><a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" class="gre-help-link">'
+        . esc_html__('Bekijk de instructies of maak direct je sleutel aan', 'gre')
+        . '</a>'
+        . '<br><a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" rel="noopener" class="gre-help-link">'
+        . esc_html__('Activeer hier direct de Places API', 'gre')
+        . '</a>'
+        . '</p>';
+echo '</div>';
+
 
             // Place ID
             echo '<div class="gre-setting">';

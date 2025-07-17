@@ -13,25 +13,50 @@ if ( ! function_exists('gre_render_explainer_page') ) {
         </p>
         <ul>
             <li><code>[google_rating]</code> (standaard: <strong>4.8 ★ 123 reviews</strong>)</li>
-            <li><code>[google_rating field="rating_star"]</code> (zelfde als standaard)</li>
+            <li><code>[google_rating field="rating_star"]</code> (alleen de sterrenbeoordeling)</li>
             <li><code>[google_rating field="rating_number"]</code> (alleen het cijfer)</li>
-            <li><code>[google_rating field="count_number"]</code> (alleen aantal reviews)</li>
+            <li><code>[google_rating field="count_number"]</code> (alleen het aantal reviews)</li>
+            <li><code>[google_rating field="opening_hours"]</code> (weergeeft de huidige openingstijden)</li>
         </ul>
 
         <h3>Styling & Elementor</h3>
         <p>
             Deze shortcode is volledig te stylen met eigen CSS.<br>
-            Ook beschikbaar als <strong>Dynamic Tag</strong> binnen Elementor PRO!
+            Ook beschikbaar als <strong>Dynamic Tag</strong> binnen Elementor PRO.
         </p>
+        <ul>
+            <li>Ga naar je Elementor widget > Dynamic Tags</li>
+            <li>Kies onder "Websitetoday Google Rating" het gewenste veld</li>
+            <li>Styling gebeurt via Elementor of met je eigen thema-CSS</li>
+        </ul>
 
         <h3>Veelgestelde vragen</h3>
         <ul>
-            <li><strong>Hoe vaak worden mijn gegevens vernieuwd?</strong><br>
-                Maximaal één keer per week, dankzij caching en cronjob.</li>
-            <li><strong>Hoe reset ik de teller?</strong><br>
-                Gebruik de knop “Reset API-call teller” in het instellingen-tabblad.</li>
-            <li><strong>Foutmelding?</strong><br>
-                Controleer of je API-key en Place ID correct zijn ingevuld én of de juiste API’s aan staan in Google Cloud.</li>
+            <li><strong>Hoe vraag ik een API Key aan?</strong><br>
+                Ga naar <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">Google Cloud Console</a>, maak een project aan en genereer daar je API Key. Vergeet niet om ook de <strong>Places API</strong> te activeren voor dit project.</li>
+
+            <li><strong>Hoe vind ik mijn Place ID?</strong><br>
+                Gebruik de <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener">Google Place ID Finder</a>. Zoek op jouw bedrijfsnaam en kopieer de Place ID.</li>
+
+            <li><strong>Hoe gebruik ik de Dynamic Tags in Elementor?</strong><br>
+                Selecteer in een Elementor-widget een Dynamic Tag en kies een veld onder <em>Websitetoday Google Rating</em>. Zo kun je bijvoorbeeld de sterrenbeoordeling of het aantal reviews tonen.</li>
+
+            <li><strong>Welke data kan ik allemaal tonen?</strong><br>
+                Je kunt o.a. de volgende gegevens tonen:
+                <ul>
+                    <li>Sterrencijfer</li>
+                    <li>Aantal reviews</li>
+                    <li>Volledige beoordelingstekst</li>
+                    <li>Openingstijden (live)</li>
+                    <li>Reviewgegevens (toekomstige uitbreiding)</li>
+                </ul>
+            </li>
+
+            <li><strong>Hoe vaak wordt de data opgehaald van Google?</strong><br>
+                De plugin maakt standaard maximaal <strong>één keer per week</strong> een API-call. De gegevens worden lokaal opgeslagen (gecached) om API-kosten te beperken.</li>
+
+            <li><strong>Ik krijg een foutmelding. Wat nu?</strong><br>
+                Controleer of je API Key en Place ID correct zijn ingevuld én of de <strong>Places API</strong> is geactiveerd in je Google Cloud project.</li>
         </ul>
 
         <h3>Ondersteuning</h3>
@@ -45,3 +70,4 @@ if ( ! function_exists('gre_render_explainer_page') ) {
         echo '</div>'; // einde .gre-admin-wrap
     }
 }
+

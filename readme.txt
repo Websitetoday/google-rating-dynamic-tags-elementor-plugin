@@ -24,6 +24,7 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
 3. (Optioneel) Installeer Elementor Pro als je de Dynamic Tag-functionaliteit wilt gebruiken.  
 4. Ga naar **Google Rating → Instellingen** en vul je Google Places **API Key** en **Place ID** in.  
    - Klik op het **?** icoontje naast het veld voor uitleg en een rechtstreekse link.
+   - Zorg dat de **Places API** geactiveerd is in je Google Cloud project.
 5. De data wordt automatisch maximaal 1x per week opgehaald. Wil je direct verversen? Klik op **Ververs data**.  
 
 == Screenshots ==
@@ -37,6 +38,15 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
    ![Ververs data](screenshot-4.png)  
 
 == Changelog ==
+= 3.1.1 =
+* Toegevoegde waarschuwing bij API Key dat de **Places API** geactiveerd moet zijn.
+* Veelgestelde vragen volledig herschreven en uitgebreid:
+  - API aanvragen
+  - Place ID zoeken
+  - Gebruik van Dynamic Tags in Elementor
+  - Beschikbare data (incl. openingstijden)
+  - API-call frequentie
+
 = 3.1.0 =
 * Uitleg nu als duidelijk **?**-icoon bij API Key en Place ID, direct naast het label.
 * Changelog en uitleg-pagina’s tonen direct uit de pluginmap, zonder externe Markdown-parser.
@@ -58,23 +68,31 @@ Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews
 Voor het volledige changelog: zie `CHANGELOG.md` of de Changelog-tab in de plugin.
 
 == Upgrade Notice ==
-= 3.1.0 =
-De admin-pagina’s en settings zijn verbeterd, API-call teller is verwijderd. Je Place ID, API Key en uitleg zijn nu duidelijk zichtbaar bij het instellen.
+= 3.1.1 =
+Veelgestelde vragen en instructies bijgewerkt; Places API vereist. Aanbevolen update voor duidelijkere onboarding.
 
 == Frequently Asked Questions ==
-= Hoe maak ik een API Key aan? =
-Klik op het **?**-icoon naast het API Key-veld of bezoek:  
-https://console.cloud.google.com/apis/credentials
+= Hoe vraag ik een API Key aan? =
+Ga naar: https://console.cloud.google.com/apis/credentials  
+Maak daar een sleutel aan en activeer de **Places API** voor je project.
 
 = Hoe vind ik mijn Place ID? =
-Klik op het **?**-icoon naast het Place ID-veld of bezoek:  
+Gebruik de officiële Google Place ID Finder:  
 https://developers.google.com/maps/documentation/places/web-service/place-id
 
-= Hoe werkt het ophalen/cachen van data? =
-De plugin haalt maximaal één keer per week de laatste data op bij Google (voor maximale efficiency en lage kosten).
+= Hoe gebruik ik de Dynamic Tags in Elementor? =
+Voeg een widget toe, klik op Dynamic Tags, kies "Websitetoday Google Rating" en selecteer het gewenste veld (bijv. sterren, cijfer of reviewaantal).
 
-= Hoe ververs ik de data handmatig? =
-Klik op de **Ververs data** knop onderaan de Instellingen-tab.
+= Welke gegevens kan ik tonen? =
+De plugin ondersteunt o.a.:
+- Gemiddelde beoordeling (sterren)
+- Cijfer (1-decimaal)
+- Aantal reviews
+- Openingstijden (huidige status)
+- (Toekomst) reviewteksten
+
+= Hoe vaak haalt de plugin nieuwe data op? =
+Standaard maximaal 1x per week. Dit voorkomt hoge kosten. Je kunt de data ook handmatig verversen via de knop op de instellingenpagina.
 
 == Support ==
 Rapporteer bugs of feature requests via GitHub Issues:  

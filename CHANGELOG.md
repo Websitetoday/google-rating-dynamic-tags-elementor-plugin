@@ -2,7 +2,21 @@
 
 Alle belangrijke wijzigingen in de plugin worden hieronder gedocumenteerd.
 
-## \[3.1.0] - 2025-07-14
+## [3.1.1] - 2025-07-17
+
+### 📝 Documentation
+
+* Uitleg bij API Key aangepast: nu met duidelijke vermelding dat de **Places API geactiveerd moet zijn**.
+* Veelgestelde vragen herschreven en uitgebreid:
+  - Hoe vraag ik een API Key aan?
+  - Hoe vind ik mijn Place ID?
+  - Hoe gebruik ik de dynamic tags in Elementor?
+  - Welke data kan ik tonen (inclusief openingstijden)?
+  - Hoe vaak maakt de plugin een API-call?
+
+---
+
+## [3.1.0] - 2025-07-14
 
 ### ✨ New
 
@@ -22,7 +36,7 @@ Alle belangrijke wijzigingen in de plugin worden hieronder gedocumenteerd.
 
 ---
 
-## \[3.0.3] - 2025-07-08
+## [3.0.3] - 2025-07-08
 
 ### 🛠 Improvements
 
