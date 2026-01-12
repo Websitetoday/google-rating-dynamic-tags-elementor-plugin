@@ -1,99 +1,108 @@
-=== Google Rating Dynamic Tags Elementor ===
-Contributors: Websitetoday.nl  
-Tags: elementor, google, rating, dynamic-tags, cache, place-id  
-Requires at least: 5.0  
-Tested up to: 6.5  
-Stable tag: main  
-License: GPLv2 or later  
-License URI: https://www.gnu.org/licenses/gpl-2.0.html  
+# Google Rating Dynamic Tags Elementor
 
-== Description ==
-Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) rechtstreeks in je content:
+Een WordPress plugin om Google Bedrijfsbeoordelingen te tonen via Elementor Dynamic Tags en shortcodes.
 
-* **Elementor Dynamic Tag**: gebruik de Google Rating als tekst, nummer, ster of gecombineerde weergave.  
-* **Shortcode**: voeg de rating of het aantal reviews toe via `[google_rating field="rating_star"]`.  
-* **Cache & Force Refresh**: Google-data wordt maximaal 1x per week automatisch opgehaald en lokaal opgeslagen. Handmatig verversen kan via de “Ververs data” knop.  
-* **Veilig & efficiënt**: Caching beperkt het aantal API-calls tot het minimum (max. 1 per week), dus geen onverwachte kosten!  
-* **Volledig te stylen** via CSS en geschikt voor elke Elementor PRO website.  
-* **Uninstall Cleanup**: bij deïnstallatie verwijdert de plugin alle instellingen en transients, zodat je opnieuw met een schone lei kunt beginnen.  
-* **Automatische updates** via GitHub Releases (PUC v5).  
+## Features
 
-== Installation ==
-1. Upload de map `google-rating-dynamic-tags-elementor-plugin` naar de `/wp-content/plugins/` directory.  
-2. Activeer de plugin via **Plugins → Geïnstalleerde plugins**.  
-3. (Optioneel) Installeer Elementor Pro als je de Dynamic Tag-functionaliteit wilt gebruiken.  
-4. Ga naar **Google Rating → Instellingen** en vul je Google Places **API Key** en **Place ID** in.  
-   - Klik op het **?** icoontje naast het veld voor uitleg en een rechtstreekse link.
-   - Zorg dat de **Places API** geactiveerd is in je Google Cloud project.
-5. De data wordt automatisch maximaal 1x per week opgehaald. Wil je direct verversen? Klik op **Ververs data**.  
+- ✨ **Elementor Dynamic Tags** voor Google Rating
+- 🕐 **Elementor Dynamic Tags** voor Google Openingstijden
+- 📝 **Shortcode** `[google_rating]`
+- ⚡ **Automatische caching** (7 dagen) om API kosten te besparen
+- 🔄 **Automatische updates** via GitHub
+- 🎨 **Volledig styleable** via Elementor of custom CSS
 
-== Screenshots ==
-1. **Banner in modal**  
-   ![Banner](screenshot-1.png)  
-2. **Instellingenpagina** (API Key, Place ID, uitleg, cache & ververs knop)  
-   ![Instellingen](screenshot-2.png)  
-3. **Elementor Dynamic Tag**  
-   ![Elementor Dynamic Tag](screenshot-3.png)  
-4. **Ververs data knop**  
-   ![Ververs data](screenshot-4.png)  
+## Installatie
 
-== Changelog ==
-= 3.1.1 =
-* Toegevoegde waarschuwing bij API Key dat de **Places API** geactiveerd moet zijn.
-* Veelgestelde vragen volledig herschreven en uitgebreid:
-  - API aanvragen
-  - Place ID zoeken
-  - Gebruik van Dynamic Tags in Elementor
-  - Beschikbare data (incl. openingstijden)
-  - API-call frequentie
+1. Download de nieuwste release van GitHub
+2. Upload via WordPress Admin → Plugins → Add New → Upload Plugin
+3. Activeer de plugin
+4. Ga naar **Google Rating** in het WordPress menu
+5. Vul je Google API Key en Place ID in
 
-= 3.1.0 =
-* Uitleg nu als duidelijk **?**-icoon bij API Key en Place ID, direct naast het label.
-* Changelog en uitleg-pagina’s tonen direct uit de pluginmap, zonder externe Markdown-parser.
-* Admin-weergave, labels en feedback verder verbeterd.
-* Plugin is verder opgeschoond; alleen één Place ID per site.
-* API-call teller verwijderd (overbodig door maximaal 1x per week ophalen).
-* Interne code en veiligheid verder verbeterd.
+## Google API Setup
 
-= 3.0.3 =
-* Instellingen gescheiden in aparte groepen voor veiliger opslaan.
-* Changelog-tab toont nu automatisch `CHANGELOG.md`.
-* Diverse admin- en UX-verbeteringen.
+### 1. Google API Key aanmaken
 
-= 3.0.0 =
-* Volledig modulaire admin, uninstall cleanup, cache-duur dropdown.
-* Info-tooltips en directe links bij API Key en Place ID velden.
-* Alleen één Place ID per installatie.
+1. Ga naar [Google Cloud Console](https://console.cloud.google.com/)
+2. Maak een nieuw project aan (of selecteer bestaand project)
+3. Ga naar **APIs & Services** → **Credentials**
+4. Klik op **Create Credentials** → **API Key**
+5. Kopieer de API Key
 
-Voor het volledige changelog: zie `CHANGELOG.md` of de Changelog-tab in de plugin.
+### 2. Places API activeren
 
-== Upgrade Notice ==
-= 3.1.1 =
-Veelgestelde vragen en instructies bijgewerkt; Places API vereist. Aanbevolen update voor duidelijkere onboarding.
+1. Ga naar [Places API](https://console.cloud.google.com/apis/library/places-backend.googleapis.com)
+2. Klik op **Enable**
 
-== Frequently Asked Questions ==
-= Hoe vraag ik een API Key aan? =
-Ga naar: https://console.cloud.google.com/apis/credentials  
-Maak daar een sleutel aan en activeer de **Places API** voor je project.
+### 3. Place ID vinden
 
-= Hoe vind ik mijn Place ID? =
-Gebruik de officiële Google Place ID Finder:  
-https://developers.google.com/maps/documentation/places/web-service/place-id
+1. Gebruik de [Place ID Finder](https://developers.google.com/maps/documentation/places/web-service/place-id)
+2. Zoek je bedrijf
+3. Kopieer de Place ID
 
-= Hoe gebruik ik de Dynamic Tags in Elementor? =
-Voeg een widget toe, klik op Dynamic Tags, kies "Websitetoday Google Rating" en selecteer het gewenste veld (bijv. sterren, cijfer of reviewaantal).
+## Gebruik
 
-= Welke gegevens kan ik tonen? =
-De plugin ondersteunt o.a.:
-- Gemiddelde beoordeling (sterren)
-- Cijfer (1-decimaal)
-- Aantal reviews
-- Openingstijden (huidige status)
-- (Toekomst) reviewteksten
+### Elementor Dynamic Tags
 
-= Hoe vaak haalt de plugin nieuwe data op? =
-Standaard maximaal 1x per week. Dit voorkomt hoge kosten. Je kunt de data ook handmatig verversen via de knop op de instellingenpagina.
+1. Open een pagina in Elementor
+2. Selecteer een tekst widget
+3. Klik op het **Dynamic** icoon
+4. Kies **Google Rating** of **Google Opening Hours**
+5. Selecteer het gewenste veld
 
-== Support ==
-Rapporteer bugs of feature requests via GitHub Issues:  
-https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/issues  
+### Shortcode
+
+```
+[google_rating field="rating_star"]
+```
+
+**Beschikbare velden:**
+- `rating_number` - Alleen het cijfer (bijv. 4.8)
+- `rating_star` - Cijfer met ster (bijv. 4.8 ★)
+- `count_number` - Aantal reviews (bijv. 123)
+- `both` - Alles (bijv. 4.8 ★ (123 reviews))
+
+## Automatische Updates
+
+De plugin gebruikt de [Plugin Update Checker](https://github.com/YahnisElsts/plugin-update-checker) library voor automatische updates vanuit GitHub.
+
+**Updates checken:**
+1. Ga naar WordPress Admin → Plugins
+2. Klik op **Check for updates**
+3. Nieuwe versies worden automatisch getoond
+
+## API Kosten
+
+De plugin gebruikt de **Google Places API** die betalend is. Om kosten te beperken:
+
+- ✅ Data wordt **7 dagen gecached**
+- ✅ Maximaal **1 API call per week** per bedrijf
+- ✅ Handmatige refresh optie beschikbaar
+
+**Geschatte kosten:** ~$0.50 per maand bij normaal gebruik
+
+## Technische Details
+
+- **Vereist:** WordPress 5.0+
+- **Vereist:** PHP 7.4+
+- **Optioneel:** Elementor Pro voor Dynamic Tags
+- **API:** Google Places API (Details endpoint)
+
+## Support
+
+- **Issues:** [GitHub Issues](https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/issues)
+- **Email:** info@websitetoday.nl
+- **Website:** [Websitetoday.nl](https://www.websitetoday.nl/)
+
+## Changelog
+
+Zie [CHANGELOG.md](CHANGELOG.md) voor volledige changelog.
+
+## Licentie
+
+Ontwikkeld door [Websitetoday.nl](https://www.websitetoday.nl/)
+
+## Credits
+
+- Plugin Update Checker door [Yahnis Elsts](https://github.com/YahnisElsts/plugin-update-checker)
+- Google Places API door Google

@@ -2,8 +2,6 @@
 
 namespace YahnisElsts\PluginUpdateChecker\v5p5\Vcs;
 
-use Parsedown;
-
 if ( !class_exists(GitHubApi::class, false) ):
 
 	class GitHubApi extends Api {
@@ -142,7 +140,8 @@ if ( !class_exists(GitHubApi::class, false) ):
 				}
 
 				if ( !empty($release->body) ) {
-					$reference->changelog = Parsedown::instance()->text($release->body);
+					// Skip Parsedown to avoid potential compatibility issues
+					$reference->changelog = nl2br(esc_html($release->body));
 				}
 
 				return $reference;

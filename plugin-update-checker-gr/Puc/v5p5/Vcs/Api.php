@@ -2,7 +2,6 @@
 
 namespace YahnisElsts\PluginUpdateChecker\v5p5\Vcs;
 
-use Parsedown;
 use PucReadmeParser;
 
 if ( !class_exists(Api::class, false) ):
@@ -295,7 +294,8 @@ if ( !class_exists(Api::class, false) ):
 				return null;
 			}
 
-			return Parsedown::instance()->text($changelog);
+			// Skip Parsedown to avoid potential compatibility issues
+			return nl2br(esc_html($changelog));
 		}
 
 		/**

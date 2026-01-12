@@ -123,14 +123,19 @@ jQuery(document).ready(function($){
         $.post(
             greSettings.ajaxUrl,
             {
-                action:   'gre_force_refresh',
-                security: greSettings.refreshNonce
+                action: 'gre_force_refresh',
+                nonce:  greSettings.refreshNonce
             }
         ).done(function(response){
             var ok  = response.success === true;
-            var msg = response.data;
-            if (ok) {
-                msg += ' (Let op: standaard wordt de data maximaal 1x per week automatisch opgehaald.)';
+            var msg = '';
+            if (ok && response.data) {
+                msg = response.data.message || 'Data succesvol ververst!';
+                if (response.data.name) {
+                    msg += ' (' + response.data.name + ')';
+                }
+            } else {
+                msg = typeof response.data === 'string' ? response.data : 'Fout bij verversen van data.';
             }
             $result
                 .text(msg)
