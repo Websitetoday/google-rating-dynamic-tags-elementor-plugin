@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.4.3] - 2026-01-12
+
+### Fixed
+- WordPress 6.7.0 compatibiliteit: alle `esc_html__()` translation functions vervangen door hardcoded strings
+- Text Domain en Domain Path headers verwijderd (geen vertaalbestanden aanwezig)
+- `get_plugin_data()` calls nu met `false, false` parameters om auto-translate te voorkomen
+- "Translation loading was triggered too early" waarschuwing volledig verholpen voor alle text domains
+- Plugin gebruikt nu alleen Nederlandse tekst zonder translation layer
+
+## [3.4.2] - 2026-01-12
+
+### Added
+- "Controleer op updates" knop in admin panel onder Instellingen
+- Plugin Updates sectie met huidige versie en GitHub link
+- AJAX handler voor handmatige update check (`gre_check_updates`)
+- JavaScript functionaliteit voor update knop
+- Auto-refresh pagina na update detectie
+- Update cache wordt geleegd bij handmatige check
+
+### Fixed
+- Update checker werkt nu correct met GitHub releases
+- Versie vergelijking tussen lokaal en GitHub
+
 ## [3.4.0] - 2026-01-12
 
 ### Added
@@ -44,43 +67,6 @@
 - Fatal error bij "Controleer op updates" opgelost
 - Parsedown library conflicten opgelost
 - Dubbele functie definities verwijderd
-
-## [3.2.1] - 2026-01-12
-
-### Fixed
-- Kritieke fout door dubbele functie definities opgelost
-- Conflicterende includes/admin-settings.php uitgeschakeld
-
-## [3.2.0] - 2026-01-12
-
-### Added
-- Complete error handling voor update checker
-- Admin notices voor update errors
-- Try-catch wrappers voor robuustheid
-
-### Fixed
-- Plugin Update Checker fatal errors opgelost
-- Update timeout verhoogd naar 30 seconden
-
-## [3.1.6] - 2026-01-12
-
-### Fixed
-- Parsedown library conflicten in GitHubApi opgelost
-- nl2br(esc_html()) gebruikt in plaats van Parsedown
-- Use statements opgeschoond
-
-## [3.1.5] - 2026-01-12
-
-### Added
-- gre_fetch_google_place_data() functie toegevoegd
-- AJAX handler voor force refresh
-- 7-dagen caching systeem
-- PHP en WordPress minimum vereisten
-
-### Fixed
-- Ontbrekende core functie toegevoegd
-- JavaScript AJAX parameter mismatch opgelost
-- Response parsing verbeterd
 
 ## [3.1.4] - 2026-01-11
 

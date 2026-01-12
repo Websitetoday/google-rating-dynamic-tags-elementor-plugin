@@ -3,7 +3,7 @@ if ( ! function_exists('gre_render_explainer_page') ) {
     function gre_render_explainer_page() {
         echo '<div class="wrap gre-admin-wrap">';
         echo '<div class="gre-card">';
-        echo '<h2>' . esc_html__( 'Uitleg & Gebruik', 'gre' ) . '</h2>';
+        echo '<h2>Uitleg &amp; Gebruik</h2>';
         ?>
 
         <h3>Shortcode: <code>[google_rating]</code></h3>

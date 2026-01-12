@@ -170,4 +170,51 @@ jQuery(document).ready(function($){
             .text('Verbonden! ✔️')
             .css('color', '#28a745');
     }
+
+    // Handler voor "Controleer op updates" knop
+    $('#gre-check-updates-button').on('click', function(){
+        var $btn    = $(this);
+        var $result = $('#gre-check-updates-result');
+
+        // Knop disablen en "laden" indicatie
+        $btn.prop('disabled', true);
+        $result.text('Even geduld…').css('color', '');
+
+        $.post(
+            greSettings.ajaxUrl,
+            {
+                action: 'gre_check_updates',
+                nonce:  greSettings.updatesNonce
+            }
+        ).done(function(response){
+            var ok  = response.success === true;
+            var msg = '';
+
+            if (ok && response.data) {
+                msg = response.data.message || 'Update check voltooid';
+
+                if (response.data.has_update) {
+                    // Nieuwe versie beschikbaar
+                    msg += ' - ';
+                    if (response.data.url) {
+                        msg += '<a href="' + response.data.url + '" target="_blank">Download v' + response.data.remote + '</a>';
+                    }
+                    // Refresh de pagina om WordPress update notice te tonen
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2000);
+                }
+            } else {
+                msg = typeof response.data === 'string' ? response.data : 'Fout bij controleren van updates.';
+            }
+
+            $result
+                .html(msg)
+                .css('color', ok ? '#28a745' : '#dc3545');
+        }).fail(function(){
+            $result.text('AJAX-fout').css('color', '#dc3545');
+        }).always(function(){
+            $btn.prop('disabled', false);
+        });
+    });
 });

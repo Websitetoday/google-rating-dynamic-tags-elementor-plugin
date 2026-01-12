@@ -17,11 +17,11 @@ class SimpleGitHubUpdater {
         $this->plugin_slug = plugin_basename($plugin_file);
         $this->github_repo = $github_repo;
 
-        // Get plugin data
+        // Get plugin data (with markup and translate disabled to prevent WP 6.7.0 warnings)
         if (!function_exists('get_plugin_data')) {
             require_once(ABSPATH . 'wp-admin/includes/plugin.php');
         }
-        $this->plugin_data = get_plugin_data($plugin_file);
+        $this->plugin_data = get_plugin_data($plugin_file, false, false);
 
         // Hook into WordPress update system
         add_filter('pre_set_site_transient_update_plugins', array($this, 'check_update'));

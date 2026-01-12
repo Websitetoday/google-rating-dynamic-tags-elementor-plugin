@@ -4,11 +4,9 @@
  * Plugin URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) als Elementor Dynamic Tag en via shortcode.
- * Version:         3.4.0
+ * Version:         3.4.3
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
- * Text Domain:     gre
- * Domain Path:     /languages
  * GitHub Branch:   main
  * Requires PHP:    7.4
  * Requires at least: 5.0
@@ -83,6 +81,36 @@ function gre_test_connection_render() {
 function gre_force_refresh_render() {
     echo '<button type="button" class="button" id="gre-refresh-data-button">Ververs data</button>
           <span id="gre-refresh-data-result" style="margin-left:12px;"></span>';
+}
+
+function gre_check_updates_render() {
+    if (!function_exists('get_plugin_data')) {
+        require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+    }
+    $plugin_data = get_plugin_data(__FILE__, false, false);
+    $current_version = $plugin_data['Version'];
+
+    echo '<div class="gre-setting">';
+    echo '<label>Huidige versie</label>';
+    echo '<div><strong>' . esc_html($current_version) . '</strong></div>';
+    echo '</div>';
+
+    echo '<div class="gre-setting">';
+    echo '<label>GitHub Repository</label>';
+    echo '<div><a href="https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin/releases" target="_blank" rel="noopener">Bekijk releases op GitHub</a></div>';
+    echo '</div>';
+
+    echo '<div class="gre-setting">';
+    echo '<label>&nbsp;</label>';
+    echo '<div>';
+    echo '<button type="button" class="button button-secondary" id="gre-check-updates-button">Controleer op updates</button>';
+    echo ' <span id="gre-check-updates-result" style="margin-left:12px;"></span>';
+    echo '</div>';
+    echo '</div>';
+
+    echo '<p class="description" style="margin-top:16px;">';
+    echo 'Updates worden automatisch elke 12 uur gecontroleerd. Klik op de knop om handmatig te checken en de cache te legen.';
+    echo '</p>';
 }
 
 // ───────────────────────────────────────────────
@@ -259,6 +287,73 @@ function gre_force_refresh_callback() {
 }
 
 // ───────────────────────────────────────────────
+// AJAX – Check for plugin updates
+// ───────────────────────────────────────────────
+add_action('wp_ajax_gre_check_updates', 'gre_check_updates_callback');
+
+function gre_check_updates_callback() {
+    if (!current_user_can('update_plugins')) {
+        wp_send_json_error('Geen toestemming.');
+    }
+
+    check_ajax_referer('gre_check_updates', 'nonce');
+
+    // Clear the update cache
+    delete_transient('gre_github_version');
+    delete_site_transient('update_plugins');
+
+    // Force WordPress to check for updates
+    wp_update_plugins();
+
+    // Get current and remote version
+    if (!function_exists('get_plugin_data')) {
+        require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+    }
+    $plugin_data = get_plugin_data(__FILE__, false, false);
+    $current_version = $plugin_data['Version'];
+
+    // Try to get remote version
+    $repo_owner = 'Websitetoday';
+    $repo_name = 'google-rating-dynamic-tags-elementor-plugin';
+    $api_url = "https://api.github.com/repos/{$repo_owner}/{$repo_name}/releases/latest";
+
+    $response = wp_remote_get($api_url, array(
+        'timeout' => 15,
+        'headers' => array('Accept' => 'application/vnd.github.v3+json'),
+    ));
+
+    if (is_wp_error($response)) {
+        wp_send_json_error('Kon GitHub niet bereiken: ' . $response->get_error_message());
+    }
+
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+
+    if (isset($data['tag_name'])) {
+        $remote_version = ltrim($data['tag_name'], 'v');
+
+        if (version_compare($current_version, $remote_version, '<')) {
+            wp_send_json_success(array(
+                'message' => "Nieuwe versie beschikbaar: v{$remote_version}",
+                'current' => $current_version,
+                'remote' => $remote_version,
+                'has_update' => true,
+                'url' => $data['html_url'] ?? '',
+            ));
+        } else {
+            wp_send_json_success(array(
+                'message' => 'Je hebt de laatste versie!',
+                'current' => $current_version,
+                'remote' => $remote_version,
+                'has_update' => false,
+            ));
+        }
+    } else {
+        wp_send_json_error('Kon versie info niet ophalen van GitHub.');
+    }
+}
+
+// ───────────────────────────────────────────────
 // SHORTCODE
 // ───────────────────────────────────────────────
 function gre_shortcode_google_rating($atts) {
@@ -310,14 +405,8 @@ add_action('admin_enqueue_scripts', function ($hook) {
         'apiKeyField'=>'gre_api_key',
         'placeIdField'=>'gre_place_id',
         'refreshNonce'=>wp_create_nonce('gre_force_refresh'),
+        'updatesNonce'=>wp_create_nonce('gre_check_updates'),
     ]);
-});
-
-// ───────────────────────────────────────────────
-// TEXTDOMAIN
-// ───────────────────────────────────────────────
-add_action('plugins_loaded',function(){
-    load_plugin_textdomain('gre',false,dirname(plugin_basename(__FILE__)).'/languages/');
 });
 
 // ───────────────────────────────────────────────

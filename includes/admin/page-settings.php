@@ -4,25 +4,25 @@ function gre_render_settings_page() {
 
     // API & Place ID kaart
     echo '<div class="gre-card">';
-        echo '<h3>' . esc_html__( 'API & Place ID', 'gre' ) . '</h3>';
+        echo '<h3>API &amp; Place ID</h3>';
         echo '<form action="options.php" method="post">';
             settings_fields( 'gre_api_settings' );
 
             // API Key
 echo '<div class="gre-setting">';
     echo '<label for="' . esc_attr( GRE_OPT_API_KEY ) . '">';
-        echo esc_html__( 'API Key', 'gre' );
+        echo 'API Key';
         echo ' <span class="gre-question-icon">?</span>';
     echo '</label>';
     gre_api_key_render();
     echo '<p class="gre-field-help">'
-        . esc_html__('Je API Key maak je aan in het Google Cloud Platform onder APIs & Services > Credentials. ', 'gre')
-        . esc_html__('Let op: zorg ervoor dat je ook de "Places API" activeert in het API-beheer van je project. Zonder deze actieve API werkt de plugin niet correct.', 'gre')
+        . 'Je API Key maak je aan in het Google Cloud Platform onder APIs &amp; Services &gt; Credentials. '
+        . 'Let op: zorg ervoor dat je ook de "Places API" activeert in het API-beheer van je project. Zonder deze actieve API werkt de plugin niet correct.'
         . '<br><a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" class="gre-help-link">'
-        . esc_html__('Bekijk de instructies of maak direct je sleutel aan', 'gre')
+        . 'Bekijk de instructies of maak direct je sleutel aan'
         . '</a>'
         . '<br><a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" rel="noopener" class="gre-help-link">'
-        . esc_html__('Activeer hier direct de Places API', 'gre')
+        . 'Activeer hier direct de Places API'
         . '</a>'
         . '</p>';
 echo '</div>';
@@ -31,14 +31,14 @@ echo '</div>';
             // Place ID
             echo '<div class="gre-setting">';
                 echo '<label for="' . esc_attr( GRE_OPT_PLACE_ID ) . '">';
-                    echo esc_html__( 'Place ID', 'gre' );
+                    echo 'Place ID';
                     echo ' <span class="gre-question-icon">?</span>';
                 echo '</label>';
                 gre_place_id_render();
                 echo '<p class="gre-field-help">'
-                    . esc_html__('Je vindt jouw Place ID via de officiële ', 'gre')
+                    . 'Je vindt jouw Place ID via de officiële '
                     . '<a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener" class="gre-help-link">'
-                    . esc_html__('Google Place ID Finder', 'gre')
+                    . 'Google Place ID Finder'
                     . '</a>'
                     . '</p>';
             echo '</div>';
@@ -50,41 +50,43 @@ echo '</div>';
             echo '</div>';
 
             // Submit knop
-            submit_button( __( 'Instellingen opslaan', 'gre' ) );
+            submit_button( 'Instellingen opslaan' );
         echo '</form>';
     echo '</div>';
 
     // Cache & Shortcode kaart
     echo '<div class="gre-card">';
-        echo '<h3>' . esc_html__( 'Cache & Shortcode', 'gre' ) . '</h3>';
+        echo '<h3>Cache &amp; Shortcode</h3>';
         echo '<form action="options.php" method="post">';
             settings_fields( 'gre_plugin_settings' );
 
             echo '<div class="gre-setting">';
-                echo '<label for="gre_cache_ttl">'
-                     . esc_html__( 'Cache informatie', 'gre' )
-                     . '</label>';
+                echo '<label for="gre_cache_ttl">Cache informatie</label>';
                 echo '<p style="margin-top:4px;">'
-                    . esc_html__( 'De Google-data wordt maximaal één keer per week opgehaald en lokaal opgeslagen. Hiermee voorkom je hoge kosten door onnodige API-calls.', 'gre' )
+                    . 'De Google-data wordt maximaal één keer per week opgehaald en lokaal opgeslagen. Hiermee voorkom je hoge kosten door onnodige API-calls.'
                     . '</p>';
             echo '</div>';
 
             echo '<div class="gre-setting">';
-                echo '<label for="gre_enable_shortcode">'
-                     . esc_html__( 'Shortcode inschakelen', 'gre' )
-                     . '</label>';
+                echo '<label for="gre_enable_shortcode">Shortcode inschakelen</label>';
                 gre_enable_shortcode_render();
             echo '</div>';
 
             // Submit knop
-            submit_button( __( 'Instellingen opslaan', 'gre' ) );
+            submit_button( 'Instellingen opslaan' );
         echo '</form>';
     echo '</div>';
 
     // Ververs data kaart
     echo '<div class="gre-card">';
-        echo '<h3>' . esc_html__( 'Data verversen', 'gre' ) . '</h3>';
+        echo '<h3>Data verversen</h3>';
         gre_force_refresh_render();
+    echo '</div>';
+
+    // Plugin updates kaart
+    echo '<div class="gre-card">';
+        echo '<h3>Plugin Updates</h3>';
+        gre_check_updates_render();
     echo '</div>';
 
     echo '</div>'; // .wrap.gre-admin-wrap
