@@ -217,4 +217,122 @@ jQuery(document).ready(function($){
             $btn.prop('disabled', false);
         });
     });
+
+    // ═══════════════════════════════════════════════════════════════
+    // BEDRIJVEN BEHEER
+    // ═══════════════════════════════════════════════════════════════
+
+    // Handler voor "Bedrijf toevoegen" knop
+    $('#gre-add-business-button').on('click', function(){
+        var $btn     = $(this);
+        var $result  = $('#gre-add-business-result');
+        var placeId  = $('#gre_new_place_id').val().trim();
+
+        if (!placeId) {
+            $result.text('Vul een Place ID in.').css('color', '#dc3545');
+            return;
+        }
+
+        $btn.prop('disabled', true);
+        $result.text('Even geduld…').css('color', '');
+
+        $.post(
+            greSettings.ajaxUrl,
+            {
+                action: 'gre_add_business',
+                nonce: greSettings.addBusinessNonce,
+                place_id: placeId
+            }
+        ).done(function(response){
+            if (response.success) {
+                $result
+                    .text(response.data.message || 'Bedrijf toegevoegd!')
+                    .css('color', '#28a745');
+                $('#gre_new_place_id').val('');
+                // Pagina herladen om lijst te verversen
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                $result
+                    .text(response.data || 'Fout bij toevoegen.')
+                    .css('color', '#dc3545');
+            }
+        }).fail(function(){
+            $result.text('AJAX-fout').css('color', '#dc3545');
+        }).always(function(){
+            $btn.prop('disabled', false);
+        });
+    });
+
+    // Handler voor "Ververs" knoppen per bedrijf
+    $(document).on('click', '.gre-refresh-business', function(){
+        var $btn = $(this);
+        var businessId = $btn.data('business-id');
+        var $row = $btn.closest('tr');
+
+        $btn.prop('disabled', true).text('Bezig...');
+
+        $.post(
+            greSettings.ajaxUrl,
+            {
+                action: 'gre_refresh_business',
+                nonce: greSettings.refreshBusinessNonce,
+                business_id: businessId
+            }
+        ).done(function(response){
+            if (response.success && response.data) {
+                // Update de tabel cellen
+                $row.find('td:eq(2)').text(response.data.rating + ' ★');
+                $row.find('td:eq(3)').text(response.data.reviews);
+                $btn.text('Ververst!');
+                setTimeout(function() {
+                    $btn.text('Ververs');
+                }, 2000);
+            } else {
+                alert(response.data || 'Fout bij verversen.');
+                $btn.text('Ververs');
+            }
+        }).fail(function(){
+            alert('AJAX-fout bij verversen.');
+            $btn.text('Ververs');
+        }).always(function(){
+            $btn.prop('disabled', false);
+        });
+    });
+
+    // Handler voor "Verwijder" knoppen per bedrijf
+    $(document).on('click', '.gre-delete-business', function(){
+        var $btn = $(this);
+        var businessId = $btn.data('business-id');
+        var $row = $btn.closest('tr');
+        var businessName = $row.find('td:first strong').text();
+
+        if (!confirm('Weet je zeker dat je "' + businessName + '" wilt verwijderen?')) {
+            return;
+        }
+
+        $btn.prop('disabled', true).text('Bezig...');
+
+        $.post(
+            greSettings.ajaxUrl,
+            {
+                action: 'gre_delete_business',
+                nonce: greSettings.deleteBusinessNonce,
+                business_id: businessId
+            }
+        ).done(function(response){
+            if (response.success) {
+                $row.fadeOut(300, function() {
+                    $(this).remove();
+                });
+            } else {
+                alert(response.data || 'Fout bij verwijderen.');
+                $btn.text('Verwijder').prop('disabled', false);
+            }
+        }).fail(function(){
+            alert('AJAX-fout bij verwijderen.');
+            $btn.text('Verwijder').prop('disabled', false);
+        });
+    });
 });

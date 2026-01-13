@@ -17,6 +17,26 @@ if ( ! function_exists('gre_render_explainer_page') ) {
             <li><code>[google_rating field="rating_number"]</code> (alleen het cijfer)</li>
             <li><code>[google_rating field="count_number"]</code> (alleen het aantal reviews)</li>
             <li><code>[google_rating field="opening_hours"]</code> (weergeeft de huidige openingstijden)</li>
+            <li><code>[google_rating field="badge"]</code> <strong>(NIEUW!)</strong> - Mooie badge met Google logo, sterren, score en aantal reviews</li>
+        </ul>
+
+        <h3>Google Rating Badge</h3>
+        <p>
+            Met <code>[google_rating field="badge"]</code> toon je een professionele Google Reviews badge:<br>
+            <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:#fff;border-radius:24px;box-shadow:0 1px 3px rgba(0,0,0,0.12);font-size:14px;margin:10px 0;">
+                <span style="color:#4285F4;font-weight:500;">Google</span>
+                <span style="color:#FBBC04;">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                <strong>5,0</strong>
+                <span style="color:#dadce0;">|</span>
+                <span style="color:#5f6368;">24 reviews</span>
+            </span>
+        </p>
+        <p>De badge bevat:</p>
+        <ul>
+            <li>Officieel Google logo</li>
+            <li>Gekleurde sterren (vol, half, leeg) gebaseerd op je score</li>
+            <li>Gemiddelde score</li>
+            <li>Aantal reviews</li>
         </ul>
 
         <h3>Styling & Elementor</h3>

@@ -1,5 +1,81 @@
 # Changelog
 
+## [3.8.0] - 2026-01-13
+
+### Added
+- **Multi-Business Support** - Koppel meerdere Google bedrijven aan de plugin
+- Nieuw "Bedrijven" beheer in admin panel:
+  - Overzichtelijke tabel met alle gekoppelde bedrijven
+  - Naam, Place ID, Rating en Reviews per bedrijf
+  - Ververs knop per bedrijf
+  - Verwijder knop (standaard bedrijf kan niet verwijderd worden)
+  - Formulier om nieuw bedrijf toe te voegen
+- Bedrijf selectie in Elementor widgets:
+  - Google Rating Badge Widget: dropdown om bedrijf te selecteren
+  - Google Openingstijden Widget: dropdown om bedrijf te selecteren
+- Shortcode uitgebreid met `business` attribuut:
+  - `[google_rating business="biz_abc123"]` voor specifiek bedrijf
+  - `[google_rating field="badge" business="default"]` voor standaard bedrijf
+- Automatische migratie van bestaande single-business data naar multi-business systeem
+- Backwards compatibiliteit met legacy configuratie
+
+### Changed
+- `gre_fetch_google_place_data()` accepteert nu optioneel een `$business_id` parameter
+- Admin interface herstructureerd: API Key apart van bedrijven beheer
+
+## [3.7.0] - 2026-01-13
+
+### Added
+- **Elementor Widget: Google Openingstijden** - Volledig aanpasbare openingstijden widget
+- Weergave opties:
+  - Volledige week overzicht
+  - Alleen vandaag
+  - Open/gesloten status
+  - Specifieke dag (ma t/m zo)
+- Layout opties: lijst, inline of tabel
+- Markeer vandaag met aangepaste kleuren
+- Optioneel klok icoon
+- Styling controls voor:
+  - Container achtergrond, padding, border, schaduw
+  - Dagnaam kleur, typografie en breedte
+  - Uren kleur en typografie
+  - Gesloten status kleur en typografie
+  - Vandaag markering (achtergrond, kleuren, padding, border-radius)
+  - Icoon kleur, grootte en spacing
+  - Rij afstand
+- Aanpasbare teksten (gesloten, open prefix, etc.)
+- Live preview in Elementor editor
+
+## [3.6.0] - 2026-01-13
+
+### Added
+- **Elementor Widget: Google Rating Badge** - Volledig aanpasbare widget in Elementor editor
+- Styling controls voor:
+  - Badge achtergrondkleur, padding, border-radius, schaduw
+  - Google logo grootte
+  - Sterren kleur (vol en leeg), grootte en tussenruimte
+  - Score tekstkleur en typografie
+  - Reviews tekstkleur en typografie
+  - Scheidingsteken stijl (|, -, /, bullet, geen)
+- Content opties: toon/verberg Google logo, sterren, score, reviews
+- Link naar Google Reviews optie
+- Badge uitlijning (links, midden, rechts)
+- Live preview in Elementor editor
+
+### Changed
+- Widget vereist nu alleen Elementor (niet meer Elementor Pro)
+
+## [3.5.0] - 2026-01-13
+
+### Added
+- Nieuwe `[google_rating field="badge"]` shortcode voor professionele Google Reviews badge
+- Google Rating Badge met officieel Google logo, gekleurde sterren, score en aantal reviews
+- Frontend CSS styling voor de badge (responsive en dark mode ondersteuning)
+- Documentatie voor de nieuwe badge functie in Uitleg pagina
+
+### Changed
+- Sterren worden nu dynamisch gegenereerd (vol, half, leeg) op basis van de daadwerkelijke score
+
 ## [3.4.3] - 2026-01-12
 
 ### Fixed

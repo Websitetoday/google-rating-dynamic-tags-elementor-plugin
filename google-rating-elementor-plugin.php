@@ -4,7 +4,7 @@
  * Plugin URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) als Elementor Dynamic Tag en via shortcode.
- * Version:         3.4.3
+ * Version:         3.8.0
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
  * GitHub Branch:   main
@@ -33,6 +33,108 @@ if (file_exists(__DIR__ . '/includes/simple-github-updater.php')) {
 define('GRE_OPT_API_KEY',   'gre_api_key');
 define('GRE_OPT_PLACE_ID',  'gre_place_id');
 define('GRE_OPT_LAST_DATA', 'gre_last_data');
+define('GRE_OPT_BUSINESSES', 'gre_businesses'); // Array van bedrijven
+
+// ───────────────────────────────────────────────
+// MULTI-BUSINESS HELPER FUNCTIONS
+// ───────────────────────────────────────────────
+
+/**
+ * Haal alle bedrijven op (met migratie van oude single-business data)
+ */
+function gre_get_businesses() {
+    $businesses = get_option(GRE_OPT_BUSINESSES, []);
+
+    // Migratie: converteer oude single-business data naar array
+    if (empty($businesses)) {
+        $old_place_id = get_option(GRE_OPT_PLACE_ID);
+        $old_data = get_option(GRE_OPT_LAST_DATA);
+
+        if ($old_place_id) {
+            $businesses = [
+                'default' => [
+                    'id' => 'default',
+                    'name' => $old_data['name'] ?? 'Hoofdbedrijf',
+                    'place_id' => $old_place_id,
+                    'data' => $old_data,
+                    'last_fetch' => get_option('gre_last_fetch_time', 0),
+                ]
+            ];
+            update_option(GRE_OPT_BUSINESSES, $businesses);
+        }
+    }
+
+    return $businesses;
+}
+
+/**
+ * Haal een specifiek bedrijf op
+ */
+function gre_get_business($business_id = 'default') {
+    $businesses = gre_get_businesses();
+    return $businesses[$business_id] ?? null;
+}
+
+/**
+ * Sla een bedrijf op
+ */
+function gre_save_business($business_id, $data) {
+    $businesses = gre_get_businesses();
+    $businesses[$business_id] = array_merge(
+        $businesses[$business_id] ?? [],
+        $data,
+        ['id' => $business_id]
+    );
+    return update_option(GRE_OPT_BUSINESSES, $businesses);
+}
+
+/**
+ * Verwijder een bedrijf
+ */
+function gre_delete_business($business_id) {
+    if ($business_id === 'default') {
+        return false; // Voorkom verwijderen van default
+    }
+    $businesses = gre_get_businesses();
+    unset($businesses[$business_id]);
+    return update_option(GRE_OPT_BUSINESSES, $businesses);
+}
+
+/**
+ * Genereer unieke business ID
+ */
+function gre_generate_business_id() {
+    return 'biz_' . substr(md5(uniqid(mt_rand(), true)), 0, 8);
+}
+
+/**
+ * Converteer AM/PM tijd naar 24-uurs formaat
+ * Bijvoorbeeld: "9:00 AM – 5:00 PM" wordt "09:00 – 17:00"
+ * Ondersteunt verschillende formaten: "9:00 AM", "9:00AM", "9:00 am", etc.
+ */
+function gre_convert_to_24h($time_string) {
+    // Eerst alle speciale spaties normaliseren naar gewone spaties
+    $time_string = preg_replace('/[\x{00A0}\x{2009}\x{202F}]/u', ' ', $time_string);
+
+    // Flexibel patroon voor AM/PM tijden
+    $pattern = '/(\d{1,2}):(\d{2})\s*(AM|PM)/i';
+
+    $result = preg_replace_callback($pattern, function($matches) {
+        $hour = intval($matches[1]);
+        $minute = $matches[2];
+        $period = strtoupper($matches[3]);
+
+        if ($period === 'PM' && $hour !== 12) {
+            $hour += 12;
+        } elseif ($period === 'AM' && $hour === 12) {
+            $hour = 0;
+        }
+
+        return sprintf('%02d:%s', $hour, $minute);
+    }, $time_string);
+
+    return $result;
+}
 
 // ───────────────────────────────────────────────
 // RENDER FUNCTIONS
@@ -180,25 +282,37 @@ add_action('admin_notices','gre_admin_notices');
 // ───────────────────────────────────────────────
 // FETCH GOOGLE PLACE DATA (with cache)
 // ───────────────────────────────────────────────
-function gre_fetch_google_place_data() {
-    $cached = get_option(GRE_OPT_LAST_DATA);
+function gre_fetch_google_place_data($business_id = 'default') {
+    $business = gre_get_business($business_id);
 
-    // Return cached data if valid and less than 7 days old
-    if (is_array($cached) && !empty($cached['rating'])) {
-        $cache_time = get_option('gre_last_fetch_time', 0);
+    // Fallback naar legacy systeem als geen business gevonden
+    if (!$business) {
+        $cached = get_option(GRE_OPT_LAST_DATA);
+        if (is_array($cached) && !empty($cached['rating'])) {
+            $cache_time = get_option('gre_last_fetch_time', 0);
+            $week_ago = time() - (7 * 24 * 60 * 60);
+            if ($cache_time > $week_ago) {
+                return $cached;
+            }
+        }
+        $place_id = get_option(GRE_OPT_PLACE_ID);
+    } else {
+        // Gebruik business data
+        $cached = $business['data'] ?? null;
+        $cache_time = $business['last_fetch'] ?? 0;
         $week_ago = time() - (7 * 24 * 60 * 60);
 
-        if ($cache_time > $week_ago) {
+        if (is_array($cached) && !empty($cached['rating']) && $cache_time > $week_ago) {
             return $cached;
         }
+        $place_id = $business['place_id'] ?? null;
     }
 
     // Fetch fresh data
     $api_key = get_option(GRE_OPT_API_KEY);
-    $place_id = get_option(GRE_OPT_PLACE_ID);
 
     if (!$api_key || !$place_id) {
-        return false;
+        return $cached ?: false;
     }
 
     $url = sprintf(
@@ -210,18 +324,27 @@ function gre_fetch_google_place_data() {
     $response = wp_remote_get($url, array('timeout' => 15));
 
     if (is_wp_error($response)) {
-        return $cached ? $cached : false;
+        return $cached ?: false;
     }
 
     $json = json_decode(wp_remote_retrieve_body($response), true);
 
     if (empty($json['result'])) {
-        return $cached ? $cached : false;
+        return $cached ?: false;
     }
 
-    // Update cache
-    update_option(GRE_OPT_LAST_DATA, $json['result']);
-    update_option('gre_last_fetch_time', time());
+    // Update cache voor dit bedrijf
+    if ($business) {
+        gre_save_business($business_id, [
+            'data' => $json['result'],
+            'last_fetch' => time(),
+            'name' => $json['result']['name'] ?? $business['name'],
+        ]);
+    } else {
+        // Legacy fallback
+        update_option(GRE_OPT_LAST_DATA, $json['result']);
+        update_option('gre_last_fetch_time', time());
+    }
 
     return $json['result'];
 }
@@ -354,12 +477,147 @@ function gre_check_updates_callback() {
 }
 
 // ───────────────────────────────────────────────
+// AJAX – Add business
+// ───────────────────────────────────────────────
+add_action('wp_ajax_gre_add_business', 'gre_add_business_callback');
+
+function gre_add_business_callback() {
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Geen toestemming.');
+    }
+
+    check_ajax_referer('gre_add_business', 'nonce');
+
+    $place_id = sanitize_text_field($_POST['place_id'] ?? '');
+    if (empty($place_id)) {
+        wp_send_json_error('Vul een Place ID in.');
+    }
+
+    $api_key = get_option(GRE_OPT_API_KEY);
+    if (empty($api_key)) {
+        wp_send_json_error('Sla eerst een API Key op.');
+    }
+
+    // Haal data op van Google
+    $url = sprintf(
+        'https://maps.googleapis.com/maps/api/place/details/json?place_id=%s&fields=name,rating,user_ratings_total,opening_hours&key=%s',
+        urlencode($place_id),
+        $api_key
+    );
+
+    $response = wp_remote_get($url, ['timeout' => 15]);
+    if (is_wp_error($response)) {
+        wp_send_json_error('Kon Google niet bereiken.');
+    }
+
+    $json = json_decode(wp_remote_retrieve_body($response), true);
+    if (empty($json['result'])) {
+        wp_send_json_error('Ongeldig Place ID of geen resultaat.');
+    }
+
+    // Genereer ID of gebruik 'default' als eerste bedrijf
+    $businesses = gre_get_businesses();
+    $business_id = empty($businesses) ? 'default' : gre_generate_business_id();
+
+    // Sla bedrijf op
+    gre_save_business($business_id, [
+        'name' => $json['result']['name'] ?? 'Onbekend',
+        'place_id' => $place_id,
+        'data' => $json['result'],
+        'last_fetch' => time(),
+    ]);
+
+    // Update ook legacy opties voor backwards compatibility
+    if ($business_id === 'default') {
+        update_option(GRE_OPT_PLACE_ID, $place_id);
+        update_option(GRE_OPT_LAST_DATA, $json['result']);
+        update_option('gre_last_fetch_time', time());
+    }
+
+    wp_send_json_success([
+        'message' => 'Bedrijf "' . $json['result']['name'] . '" toegevoegd!',
+        'business_id' => $business_id,
+        'name' => $json['result']['name'],
+        'rating' => $json['result']['rating'] ?? 0,
+        'reviews' => $json['result']['user_ratings_total'] ?? 0,
+    ]);
+}
+
+// ───────────────────────────────────────────────
+// AJAX – Delete business
+// ───────────────────────────────────────────────
+add_action('wp_ajax_gre_delete_business', 'gre_delete_business_callback');
+
+function gre_delete_business_callback() {
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Geen toestemming.');
+    }
+
+    check_ajax_referer('gre_delete_business', 'nonce');
+
+    $business_id = sanitize_text_field($_POST['business_id'] ?? '');
+    if (empty($business_id)) {
+        wp_send_json_error('Geen bedrijf ID opgegeven.');
+    }
+
+    if ($business_id === 'default') {
+        wp_send_json_error('Het standaard bedrijf kan niet worden verwijderd.');
+    }
+
+    if (gre_delete_business($business_id)) {
+        wp_send_json_success(['message' => 'Bedrijf verwijderd.']);
+    } else {
+        wp_send_json_error('Kon bedrijf niet verwijderen.');
+    }
+}
+
+// ───────────────────────────────────────────────
+// AJAX – Refresh business data
+// ───────────────────────────────────────────────
+add_action('wp_ajax_gre_refresh_business', 'gre_refresh_business_callback');
+
+function gre_refresh_business_callback() {
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('Geen toestemming.');
+    }
+
+    check_ajax_referer('gre_refresh_business', 'nonce');
+
+    $business_id = sanitize_text_field($_POST['business_id'] ?? 'default');
+    $business = gre_get_business($business_id);
+
+    if (!$business) {
+        wp_send_json_error('Bedrijf niet gevonden.');
+    }
+
+    // Reset cache time om verse data te forceren
+    gre_save_business($business_id, ['last_fetch' => 0]);
+
+    // Haal nieuwe data op
+    $data = gre_fetch_google_place_data($business_id);
+
+    if ($data && !empty($data['rating'])) {
+        wp_send_json_success([
+            'message' => 'Data voor "' . ($data['name'] ?? 'Bedrijf') . '" ververst!',
+            'rating' => $data['rating'],
+            'reviews' => $data['user_ratings_total'] ?? 0,
+            'name' => $data['name'] ?? '',
+        ]);
+    } else {
+        wp_send_json_error('Kon geen nieuwe data ophalen.');
+    }
+}
+
+// ───────────────────────────────────────────────
 // SHORTCODE
 // ───────────────────────────────────────────────
 function gre_shortcode_google_rating($atts) {
-    $atts = shortcode_atts(['field'=>'rating_star'],$atts);
+    $atts = shortcode_atts([
+        'field' => 'rating_star',
+        'business' => 'default',
+    ], $atts);
 
-    $data = gre_fetch_google_place_data();
+    $data = gre_fetch_google_place_data($atts['business']);
     if (!$data) return 'Geen data beschikbaar.';
 
     $rating = $data['rating'] ?? 0;
@@ -368,8 +626,52 @@ function gre_shortcode_google_rating($atts) {
     switch ($atts['field']) {
         case 'rating_number': return $rating;
         case 'count_number':  return $count;
+        case 'badge':         return gre_render_badge($rating, $count);
         default:              return sprintf('%.1f ★ (%s reviews)', $rating, $count);
     }
+}
+
+/**
+ * Render de Google Rating badge met logo, sterren, score en reviews
+ */
+function gre_render_badge($rating, $count) {
+    // Google logo SVG
+    $google_logo = '<svg class="gre-badge-google-logo" viewBox="0 0 74 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.24 8.19v2.46h5.88c-.18 1.38-.64 2.39-1.34 3.1-.86.86-2.2 1.8-4.54 1.8-3.62 0-6.45-2.92-6.45-6.54s2.83-6.54 6.45-6.54c1.95 0 3.38.77 4.43 1.76L15.4 2.5C13.94 1.08 11.98 0 9.24 0 4.28 0 .11 4.04.11 9s4.17 9 9.13 9c2.68 0 4.7-.88 6.28-2.52 1.62-1.62 2.13-3.91 2.13-5.75 0-.57-.04-1.1-.13-1.54H9.24z" fill="#4285F4"/><path d="M25 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z" fill="#EA4335"/><path d="M53.58 7.49h-.09c-.57-.68-1.67-1.3-3.06-1.3C47.53 6.19 45 8.72 45 12c0 3.26 2.53 5.81 5.43 5.81 1.39 0 2.49-.62 3.06-1.32h.09v.81c0 2.22-1.19 3.41-3.1 3.41-1.56 0-2.53-1.12-2.93-2.07l-2.22.92c.64 1.54 2.33 3.43 5.15 3.43 2.99 0 5.52-1.76 5.52-6.05V6.49h-2.42v1zm-2.93 8.03c-1.76 0-3.1-1.5-3.1-3.52 0-2.05 1.34-3.52 3.1-3.52 1.74 0 3.1 1.5 3.1 3.54 0 2.02-1.36 3.5-3.1 3.5z" fill="#4285F4"/><path d="M38 6.19c-3.21 0-5.83 2.44-5.83 5.81 0 3.34 2.62 5.81 5.83 5.81s5.83-2.46 5.83-5.81c0-3.37-2.62-5.81-5.83-5.81zm0 9.33c-1.76 0-3.28-1.45-3.28-3.52 0-2.09 1.52-3.52 3.28-3.52s3.28 1.43 3.28 3.52c0 2.07-1.52 3.52-3.28 3.52z" fill="#FBBC05"/><path d="M58 .24h2.51v17.57H58z" fill="#34A853"/><path d="M68.26 15.52c-1.3 0-2.22-.59-2.82-1.76l7.77-3.21-.26-.66c-.48-1.3-1.96-3.7-4.97-3.7-2.99 0-5.48 2.35-5.48 5.81 0 3.26 2.46 5.81 5.76 5.81 2.66 0 4.2-1.63 4.84-2.57l-1.98-1.32c-.66.96-1.56 1.6-2.86 1.6zm-.18-7.15c1.03 0 1.91.53 2.2 1.28l-5.25 2.17c0-2.44 1.73-3.45 3.05-3.45z" fill="#EA4335"/></svg>';
+
+    // Sterren genereren op basis van rating
+    $full_stars = floor($rating);
+    $half_star = ($rating - $full_stars) >= 0.5;
+    $empty_stars = 5 - $full_stars - ($half_star ? 1 : 0);
+
+    $stars_html = '<span class="gre-badge-stars">';
+
+    // Volle sterren
+    for ($i = 0; $i < $full_stars; $i++) {
+        $stars_html .= '<svg class="gre-star gre-star-full" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#FBBC04"/></svg>';
+    }
+
+    // Halve ster
+    if ($half_star) {
+        $stars_html .= '<svg class="gre-star gre-star-half" viewBox="0 0 24 24"><defs><linearGradient id="halfGrad"><stop offset="50%" stop-color="#FBBC04"/><stop offset="50%" stop-color="#E8E8E8"/></linearGradient></defs><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="url(#halfGrad)"/></svg>';
+    }
+
+    // Lege sterren
+    for ($i = 0; $i < $empty_stars; $i++) {
+        $stars_html .= '<svg class="gre-star gre-star-empty" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#E8E8E8"/></svg>';
+    }
+
+    $stars_html .= '</span>';
+
+    // Badge HTML samenstellen
+    $html = '<div class="gre-rating-badge">';
+    $html .= $google_logo;
+    $html .= $stars_html;
+    $html .= '<span class="gre-badge-score">' . number_format($rating, 1, ',', '.') . '</span>';
+    $html .= '<span class="gre-badge-separator">|</span>';
+    $html .= '<span class="gre-badge-reviews">' . number_format($count, 0, ',', '.') . ' reviews</span>';
+    $html .= '</div>';
+
+    return $html;
 }
 
 if (get_option('gre_enable_shortcode',1)) {
@@ -392,6 +694,26 @@ add_action('elementor/dynamic_tags/register_tags', function ($tags) {
 },51);
 
 // ───────────────────────────────────────────────
+// ELEMENTOR WIDGETS
+// ───────────────────────────────────────────────
+add_action('elementor/widgets/register', function ($widgets_manager) {
+    // Google Rating Badge Widget
+    require_once __DIR__ . '/widgets/class-google-rating-badge-widget.php';
+    $widgets_manager->register(new \GRE\Widgets\Google_Rating_Badge_Widget());
+
+    // Google Opening Hours Widget
+    require_once __DIR__ . '/widgets/class-google-opening-hours-widget.php';
+    $widgets_manager->register(new \GRE\Widgets\Google_Opening_Hours_Widget());
+});
+
+// ───────────────────────────────────────────────
+// FRONTEND STYLES (Badge)
+// ───────────────────────────────────────────────
+add_action('wp_enqueue_scripts', function () {
+    wp_enqueue_style('gre-frontend-badge', plugin_dir_url(__FILE__).'assets/css/frontend-badge.css', [], '1.0.0');
+});
+
+// ───────────────────────────────────────────────
 // ADMIN STYLES
 // ───────────────────────────────────────────────
 add_action('admin_enqueue_scripts', function ($hook) {
@@ -406,6 +728,9 @@ add_action('admin_enqueue_scripts', function ($hook) {
         'placeIdField'=>'gre_place_id',
         'refreshNonce'=>wp_create_nonce('gre_force_refresh'),
         'updatesNonce'=>wp_create_nonce('gre_check_updates'),
+        'addBusinessNonce'=>wp_create_nonce('gre_add_business'),
+        'deleteBusinessNonce'=>wp_create_nonce('gre_delete_business'),
+        'refreshBusinessNonce'=>wp_create_nonce('gre_refresh_business'),
     ]);
 });
 

@@ -1,0 +1,223 @@
+/* Google Rating Badge Styles */
+
+.gre-rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* Google Logo */
+.gre-badge-google-logo {
+    width: 52px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Stars Container */
+.gre-badge-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* Individual Stars */
+.gre-star {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Score */
+.gre-badge-score {
+    font-weight: 600;
+    color: #333;
+    font-size: 15px;
+}
+
+/* Separator */
+.gre-badge-separator {
+    color: #dadce0;
+    font-weight: 300;
+}
+
+/* Reviews Count */
+.gre-badge-reviews {
+    color: #5f6368;
+    font-size: 13px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .gre-rating-badge {
+        padding: 6px 12px;
+        gap: 6px;
+        font-size: 12px;
+    }
+
+    .gre-badge-google-logo {
+        width: 44px;
+        height: 15px;
+    }
+
+    .gre-star {
+        width: 14px;
+        height: 14px;
+    }
+
+    .gre-badge-score {
+        font-size: 13px;
+    }
+
+    .gre-badge-reviews {
+        font-size: 11px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .gre-rating-badge {
+        background: #202124;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .gre-badge-score {
+        color: #e8eaed;
+    }
+
+    .gre-badge-separator {
+        color: #5f6368;
+    }
+
+    .gre-badge-reviews {
+        color: #9aa0a6;
+    }
+}
+
+/* Hover effect - optional, can be disabled */
+.gre-rating-badge:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   OPENING HOURS WIDGET STYLES
+   ══════════════════════════════════════════════════════════════ */
+
+.gre-opening-hours {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Row layout */
+.gre-opening-hours .gre-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.gre-opening-hours .gre-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Day name */
+.gre-opening-hours .gre-day-name {
+    display: inline-block;
+    width: 100px;
+    min-width: 100px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Hours */
+.gre-opening-hours .gre-hours {
+    color: #555;
+}
+
+/* Closed state */
+.gre-opening-hours .gre-closed {
+    color: #e74c3c;
+}
+
+/* Today highlight */
+.gre-opening-hours .gre-row.is-today {
+    background-color: #e8f5e9;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-left: -8px;
+    margin-right: -8px;
+}
+
+.gre-opening-hours .gre-row.is-today .gre-day-name {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.gre-opening-hours .gre-row.is-today .gre-hours {
+    color: #2e7d32;
+}
+
+/* Clock icon */
+.gre-opening-hours .gre-clock-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    color: #333;
+}
+
+/* Table layout */
+.gre-opening-hours .gre-hours-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.gre-opening-hours .gre-hours-table tr {
+    border-bottom: 1px solid #eee;
+}
+
+.gre-opening-hours .gre-hours-table tr:last-child {
+    border-bottom: none;
+}
+
+.gre-opening-hours .gre-hours-table td {
+    padding: 8px 4px;
+}
+
+.gre-opening-hours .gre-hours-table .gre-day-name {
+    width: auto;
+    min-width: auto;
+}
+
+/* Status display */
+.gre-opening-hours .gre-status {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* No data message */
+.gre-opening-hours .gre-no-data {
+    color: #999;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .gre-opening-hours .gre-day-name {
+        width: 80px;
+        min-width: 80px;
+        font-size: 13px;
+    }
+
+    .gre-opening-hours .gre-hours,
+    .gre-opening-hours .gre-closed {
+        font-size: 13px;
+    }
+}

@@ -2,9 +2,9 @@
 function gre_render_settings_page() {
     echo '<div class="wrap gre-admin-wrap">';
 
-    // API & Place ID kaart
+    // API Key kaart
     echo '<div class="gre-card">';
-        echo '<h3>API &amp; Place ID</h3>';
+        echo '<h3>API Key</h3>';
         echo '<form action="options.php" method="post">';
             settings_fields( 'gre_api_settings' );
 
@@ -27,31 +27,21 @@ echo '<div class="gre-setting">';
         . '</p>';
 echo '</div>';
 
-
-            // Place ID
-            echo '<div class="gre-setting">';
-                echo '<label for="' . esc_attr( GRE_OPT_PLACE_ID ) . '">';
-                    echo 'Place ID';
-                    echo ' <span class="gre-question-icon">?</span>';
-                echo '</label>';
-                gre_place_id_render();
-                echo '<p class="gre-field-help">'
-                    . 'Je vindt jouw Place ID via de officiële '
-                    . '<a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener" class="gre-help-link">'
-                    . 'Google Place ID Finder'
-                    . '</a>'
-                    . '</p>';
-            echo '</div>';
-
-            // Controleer verbinding
-            echo '<div class="gre-setting">';
-                echo '<label>&nbsp;</label>';
-                gre_test_connection_render();
-            echo '</div>';
-
             // Submit knop
-            submit_button( 'Instellingen opslaan' );
+            submit_button( 'API Key opslaan' );
         echo '</form>';
+    echo '</div>';
+
+    // Bedrijven beheer kaart
+    echo '<div class="gre-card">';
+        echo '<h3>Bedrijven</h3>';
+        echo '<p class="description">Beheer hier de gekoppelde Google bedrijven. Je kunt meerdere bedrijven toevoegen en per widget/shortcode kiezen welk bedrijf getoond wordt.</p>';
+
+        gre_render_businesses_list();
+
+        echo '<hr style="margin: 20px 0;">';
+        echo '<h4>Nieuw bedrijf toevoegen</h4>';
+        gre_render_add_business_form();
     echo '</div>';
 
     // Cache & Shortcode kaart
@@ -77,12 +67,6 @@ echo '</div>';
         echo '</form>';
     echo '</div>';
 
-    // Ververs data kaart
-    echo '<div class="gre-card">';
-        echo '<h3>Data verversen</h3>';
-        gre_force_refresh_render();
-    echo '</div>';
-
     // Plugin updates kaart
     echo '<div class="gre-card">';
         echo '<h3>Plugin Updates</h3>';
@@ -90,4 +74,78 @@ echo '</div>';
     echo '</div>';
 
     echo '</div>'; // .wrap.gre-admin-wrap
+}
+
+/**
+ * Render de lijst met bedrijven
+ */
+function gre_render_businesses_list() {
+    $businesses = gre_get_businesses();
+
+    if (empty($businesses)) {
+        echo '<p class="gre-no-businesses">Nog geen bedrijven gekoppeld. Voeg hieronder je eerste bedrijf toe.</p>';
+        return;
+    }
+
+    echo '<table class="wp-list-table widefat fixed striped gre-businesses-table">';
+    echo '<thead><tr>';
+    echo '<th style="width:30%;">Naam</th>';
+    echo '<th style="width:25%;">Place ID</th>';
+    echo '<th style="width:15%;">Rating</th>';
+    echo '<th style="width:15%;">Reviews</th>';
+    echo '<th style="width:15%;">Acties</th>';
+    echo '</tr></thead>';
+    echo '<tbody>';
+
+    foreach ($businesses as $id => $business) {
+        $data = $business['data'] ?? [];
+        $rating = $data['rating'] ?? '-';
+        $reviews = $data['user_ratings_total'] ?? '-';
+        $name = $business['name'] ?? 'Onbekend';
+        $place_id = $business['place_id'] ?? '-';
+        $is_default = ($id === 'default');
+
+        echo '<tr data-business-id="' . esc_attr($id) . '">';
+        echo '<td><strong>' . esc_html($name) . '</strong>';
+        if ($is_default) {
+            echo ' <span class="gre-badge-default">Standaard</span>';
+        }
+        echo '</td>';
+        echo '<td><code style="font-size:11px;">' . esc_html(substr($place_id, 0, 20)) . '...</code></td>';
+        echo '<td>' . esc_html($rating) . ' &#9733;</td>';
+        echo '<td>' . esc_html($reviews) . '</td>';
+        echo '<td>';
+        echo '<button type="button" class="button button-small gre-refresh-business" data-business-id="' . esc_attr($id) . '">Ververs</button> ';
+        if (!$is_default) {
+            echo '<button type="button" class="button button-small button-link-delete gre-delete-business" data-business-id="' . esc_attr($id) . '">Verwijder</button>';
+        }
+        echo '</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody></table>';
+}
+
+/**
+ * Render het formulier voor nieuw bedrijf
+ */
+function gre_render_add_business_form() {
+    echo '<div class="gre-add-business-form">';
+
+    echo '<div class="gre-setting">';
+        echo '<label for="gre_new_place_id">Place ID</label>';
+        echo '<input type="text" id="gre_new_place_id" name="gre_new_place_id" class="regular-text" placeholder="ChIJ..." />';
+        echo '<p class="gre-field-help">'
+            . 'Vind je Place ID via de '
+            . '<a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener">Google Place ID Finder</a>'
+            . '</p>';
+    echo '</div>';
+
+    echo '<div class="gre-setting">';
+        echo '<label>&nbsp;</label>';
+        echo '<button type="button" class="button button-primary" id="gre-add-business-button">Bedrijf toevoegen</button>';
+        echo ' <span id="gre-add-business-result" style="margin-left:12px;"></span>';
+    echo '</div>';
+
+    echo '</div>';
 }
