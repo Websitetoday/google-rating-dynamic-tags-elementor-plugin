@@ -4,7 +4,7 @@
  * Plugin URI:      https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * GitHub Plugin URI: https://github.com/Websitetoday/google-rating-dynamic-tags-elementor-plugin
  * Description:     Toon eenvoudig de Google Bedrijfsbeoordelingen (gemiddelde score, aantal reviews en link naar reviews) als Elementor Dynamic Tag en via shortcode.
- * Version:         3.8.0
+ * Version:         3.8.1
  * Author:          Websitetoday.nl
  * Author URI:      https://www.websitetoday.nl/
  * GitHub Branch:   main
@@ -13,6 +13,13 @@
  */
 
 if (!defined('ABSPATH')) exit;
+
+// ───────────────────────────────────────────────
+// LOAD TEXTDOMAIN (WordPress 6.7+ compatible)
+// ───────────────────────────────────────────────
+add_action('init', function () {
+    load_plugin_textdomain('gre', false, dirname(plugin_basename(__FILE__)) . '/languages');
+});
 
 // ──────────────────────────────────────────
 // Simple GitHub Updater - Lightweight & Stable
